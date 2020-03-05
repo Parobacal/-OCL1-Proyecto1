@@ -1,0 +1,9 @@
+C:\Users\Pablo Barillas\Documents\Github\-OCL1-Proyecto1\Proyecto1_201602503\bin\Debug\Proyecto1_201602503.exe.config
+C:\Users\Pablo Barillas\Documents\Github\-OCL1-Proyecto1\Proyecto1_201602503\bin\Debug\Proyecto1_201602503.exe
+C:\Users\Pablo Barillas\Documents\Github\-OCL1-Proyecto1\Proyecto1_201602503\bin\Debug\Proyecto1_201602503.pdb
+C:\Users\Pablo Barillas\Documents\Github\-OCL1-Proyecto1\Proyecto1_201602503\obj\Debug\Proyecto1_201602503.csprojAssemblyReference.cache
+C:\Users\Pablo Barillas\Documents\Github\-OCL1-Proyecto1\Proyecto1_201602503\obj\Debug\Proyecto1_201602503.Form1.resources
+C:\Users\Pablo Barillas\Documents\Github\-OCL1-Proyecto1\Proyecto1_201602503\obj\Debug\Proyecto1_201602503.Properties.Resources.resources
+C:\Users\Pablo Barillas\Documents\Github\-OCL1-Proyecto1\Proyecto1_201602503\obj\Debug\Proyecto1_201602503.csproj.GenerateResource.cache
+C:\Users\Pablo Barillas\Documents\Github\-OCL1-Proyecto1\Proyecto1_201602503\obj\Debug\Proyecto1_201602503.exe
+C:\Users\Pablo Barillas\Documents\Github\-OCL1-Proyecto1\Proyecto1_201602503\obj\Debug\Proyecto1_201602503.pdb
