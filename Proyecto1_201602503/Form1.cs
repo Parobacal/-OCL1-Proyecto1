@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Collections;
+
 
 namespace Proyecto1_201602503
 {
@@ -16,6 +18,7 @@ namespace Proyecto1_201602503
         public int contador_img = 0;
         public int contador_img1 = 0;
         public string img,img1;
+        Automata automata = new Automata();
         public Form1()
         {
             InitializeComponent();
@@ -116,6 +119,12 @@ namespace Proyecto1_201602503
                     sw.Write(tabControl.SelectedTab.Controls.OfType<RichTextBox>().Reverse().FirstOrDefault().Text);
                 }
             }
+        }
+
+        private void generarPDFToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            automata.analisisLexico(tabControl.SelectedTab.Controls.OfType<RichTextBox>().Reverse().FirstOrDefault().Text);
+            automata.reporteHtml();
         }
 
         private void button1_Click(object sender, EventArgs e)

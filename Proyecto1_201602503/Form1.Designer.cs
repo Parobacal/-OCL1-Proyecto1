@@ -33,9 +33,12 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.abrirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.guardarComoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.agregarPestanaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cerrarPestanaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reporteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generarPDFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -45,13 +48,11 @@
             this.btnanterior = new System.Windows.Forms.Button();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.agregarPestanaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cerrarPestanaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.label5 = new System.Windows.Forms.Label();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.tabControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -68,7 +69,7 @@
             this.reporteToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1608, 42);
+            this.menuStrip1.Size = new System.Drawing.Size(1608, 40);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -89,7 +90,7 @@
             this.abrirToolStripMenuItem.BackColor = System.Drawing.Color.DimGray;
             this.abrirToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.abrirToolStripMenuItem.Name = "abrirToolStripMenuItem";
-            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(304, 44);
+            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(321, 44);
             this.abrirToolStripMenuItem.Text = "Abrir";
             this.abrirToolStripMenuItem.Click += new System.EventHandler(this.abrirToolStripMenuItem_Click);
             // 
@@ -98,9 +99,27 @@
             this.guardarComoToolStripMenuItem.BackColor = System.Drawing.Color.DimGray;
             this.guardarComoToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.guardarComoToolStripMenuItem.Name = "guardarComoToolStripMenuItem";
-            this.guardarComoToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.guardarComoToolStripMenuItem.Size = new System.Drawing.Size(321, 44);
             this.guardarComoToolStripMenuItem.Text = "Guardar Como";
             this.guardarComoToolStripMenuItem.Click += new System.EventHandler(this.guardarComoToolStripMenuItem_Click);
+            // 
+            // agregarPestanaToolStripMenuItem
+            // 
+            this.agregarPestanaToolStripMenuItem.BackColor = System.Drawing.Color.DimGray;
+            this.agregarPestanaToolStripMenuItem.ForeColor = System.Drawing.Color.White;
+            this.agregarPestanaToolStripMenuItem.Name = "agregarPestanaToolStripMenuItem";
+            this.agregarPestanaToolStripMenuItem.Size = new System.Drawing.Size(321, 44);
+            this.agregarPestanaToolStripMenuItem.Text = "Agregar Pestana";
+            this.agregarPestanaToolStripMenuItem.Click += new System.EventHandler(this.agregarPestanaToolStripMenuItem_Click);
+            // 
+            // cerrarPestanaToolStripMenuItem
+            // 
+            this.cerrarPestanaToolStripMenuItem.BackColor = System.Drawing.Color.DimGray;
+            this.cerrarPestanaToolStripMenuItem.ForeColor = System.Drawing.Color.White;
+            this.cerrarPestanaToolStripMenuItem.Name = "cerrarPestanaToolStripMenuItem";
+            this.cerrarPestanaToolStripMenuItem.Size = new System.Drawing.Size(321, 44);
+            this.cerrarPestanaToolStripMenuItem.Text = "Cerrar Pestana";
+            this.cerrarPestanaToolStripMenuItem.Click += new System.EventHandler(this.cerrarPestanaToolStripMenuItem_Click);
             // 
             // reporteToolStripMenuItem
             // 
@@ -108,7 +127,7 @@
             this.generarPDFToolStripMenuItem});
             this.reporteToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.reporteToolStripMenuItem.Name = "reporteToolStripMenuItem";
-            this.reporteToolStripMenuItem.Size = new System.Drawing.Size(118, 36);
+            this.reporteToolStripMenuItem.Size = new System.Drawing.Size(118, 38);
             this.reporteToolStripMenuItem.Text = "Reporte";
             // 
             // generarPDFToolStripMenuItem
@@ -116,8 +135,9 @@
             this.generarPDFToolStripMenuItem.BackColor = System.Drawing.Color.DimGray;
             this.generarPDFToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.generarPDFToolStripMenuItem.Name = "generarPDFToolStripMenuItem";
-            this.generarPDFToolStripMenuItem.Size = new System.Drawing.Size(282, 44);
-            this.generarPDFToolStripMenuItem.Text = "Generar PDF";
+            this.generarPDFToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.generarPDFToolStripMenuItem.Text = "Generar HTML";
+            this.generarPDFToolStripMenuItem.Click += new System.EventHandler(this.generarPDFToolStripMenuItem_Click);
             // 
             // tabControl
             // 
@@ -125,8 +145,17 @@
             this.tabControl.Location = new System.Drawing.Point(18, 91);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(754, 539);
+            this.tabControl.Size = new System.Drawing.Size(754, 452);
             this.tabControl.TabIndex = 1;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Location = new System.Drawing.Point(8, 39);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Size = new System.Drawing.Size(738, 405);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Nuevo";
+            this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // richTextBox1
             // 
@@ -217,33 +246,6 @@
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
             // 
-            // agregarPestanaToolStripMenuItem
-            // 
-            this.agregarPestanaToolStripMenuItem.BackColor = System.Drawing.Color.DimGray;
-            this.agregarPestanaToolStripMenuItem.ForeColor = System.Drawing.Color.White;
-            this.agregarPestanaToolStripMenuItem.Name = "agregarPestanaToolStripMenuItem";
-            this.agregarPestanaToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
-            this.agregarPestanaToolStripMenuItem.Text = "Agregar Pestana";
-            this.agregarPestanaToolStripMenuItem.Click += new System.EventHandler(this.agregarPestanaToolStripMenuItem_Click);
-            // 
-            // cerrarPestanaToolStripMenuItem
-            // 
-            this.cerrarPestanaToolStripMenuItem.BackColor = System.Drawing.Color.DimGray;
-            this.cerrarPestanaToolStripMenuItem.ForeColor = System.Drawing.Color.White;
-            this.cerrarPestanaToolStripMenuItem.Name = "cerrarPestanaToolStripMenuItem";
-            this.cerrarPestanaToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
-            this.cerrarPestanaToolStripMenuItem.Text = "Cerrar Pestana";
-            this.cerrarPestanaToolStripMenuItem.Click += new System.EventHandler(this.cerrarPestanaToolStripMenuItem_Click);
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Location = new System.Drawing.Point(8, 39);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(738, 492);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Nuevo";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -283,6 +285,15 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(185, 556);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 14;
+            this.button3.Text = "button3";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -290,6 +301,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ClientSize = new System.Drawing.Size(1608, 962);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.pictureBox2);
@@ -343,6 +355,7 @@
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
     }
 }
 
