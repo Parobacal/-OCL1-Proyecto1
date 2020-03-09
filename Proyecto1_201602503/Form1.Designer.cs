@@ -39,7 +39,7 @@
             this.generarPDFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.Consola = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -82,7 +82,7 @@
             this.cerrarPestanaToolStripMenuItem});
             this.toolStripMenuItem1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(115, 38);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(115, 36);
             this.toolStripMenuItem1.Text = "Archivo";
             // 
             // abrirToolStripMenuItem
@@ -127,7 +127,7 @@
             this.generarPDFToolStripMenuItem});
             this.reporteToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.reporteToolStripMenuItem.Name = "reporteToolStripMenuItem";
-            this.reporteToolStripMenuItem.Size = new System.Drawing.Size(118, 38);
+            this.reporteToolStripMenuItem.Size = new System.Drawing.Size(118, 36);
             this.reporteToolStripMenuItem.Text = "Reporte";
             // 
             // generarPDFToolStripMenuItem
@@ -135,7 +135,7 @@
             this.generarPDFToolStripMenuItem.BackColor = System.Drawing.Color.DimGray;
             this.generarPDFToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.generarPDFToolStripMenuItem.Name = "generarPDFToolStripMenuItem";
-            this.generarPDFToolStripMenuItem.Size = new System.Drawing.Size(359, 44);
+            this.generarPDFToolStripMenuItem.Size = new System.Drawing.Size(303, 44);
             this.generarPDFToolStripMenuItem.Text = "Generar HTML";
             this.generarPDFToolStripMenuItem.Click += new System.EventHandler(this.generarPDFToolStripMenuItem_Click);
             // 
@@ -157,15 +157,15 @@
             this.tabPage1.Text = "Nuevo";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // richTextBox1
+            // Consola
             // 
-            this.richTextBox1.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.richTextBox1.ForeColor = System.Drawing.Color.Lime;
-            this.richTextBox1.Location = new System.Drawing.Point(12, 688);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(760, 246);
-            this.richTextBox1.TabIndex = 2;
-            this.richTextBox1.Text = "";
+            this.Consola.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.Consola.ForeColor = System.Drawing.Color.Lime;
+            this.Consola.Location = new System.Drawing.Point(12, 688);
+            this.Consola.Name = "Consola";
+            this.Consola.Size = new System.Drawing.Size(760, 246);
+            this.Consola.TabIndex = 2;
+            this.Consola.Text = "";
             // 
             // label1
             // 
@@ -287,12 +287,13 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(185, 556);
+            this.button3.Location = new System.Drawing.Point(26, 556);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.Size = new System.Drawing.Size(207, 45);
             this.button3.TabIndex = 14;
-            this.button3.Text = "button3";
+            this.button3.Text = "Cargar Thompson";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // Form1
             // 
@@ -313,7 +314,7 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.richTextBox1);
+            this.Controls.Add(this.Consola);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -339,7 +340,7 @@
         private System.Windows.Forms.ToolStripMenuItem reporteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem generarPDFToolStripMenuItem;
         private System.Windows.Forms.TabControl tabControl;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox Consola;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;

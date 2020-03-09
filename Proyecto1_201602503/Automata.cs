@@ -10,14 +10,24 @@ namespace Proyecto1_201602503
 {
     class Automata
     {
-        //Atributos de la clase automata
+        // ---------------Atributos de la clase automata---------------
 
         private string lexema; // String para guardar y concatenar cada lexema leido
         private int fila, columna; // Contadores para poder identificar la fila y la columna
-        private ArrayList arrayLexemas, arrayToken, arrayFila, arrayColumna, arrayError, arrayFilaError, arrayColumnaError, arrayExp, arrayLex; // Arreglos para guardar toda la lista de simbolos
+        private ArrayList arrayLexemas, arrayToken, arrayFila, arrayColumna, arrayError, arrayFilaError, arrayColumnaError, arrayExp, arrayLex, arrayConj; // Arreglos para guardar toda la lista de simbolos
 
-        // Constructor de la clase automata
-        public Automata(){
+        // ---------------Constructor de la clase automata---------------
+        public Automata(){  
+            // Solamente se inicializan estos arreglos una vez que se inicia la ejecucion del programa
+            this.arrayConj = new ArrayList();
+            this.arrayExp = new ArrayList();
+            this.arrayLex = new ArrayList();
+
+        }
+
+        // ---------------Metodos de la clase automata---------------
+
+        public void Inicializar() { // Este metodo inicializara los arreglos y variables que serviran por cada llamada del metodo analis lexico y sintactico
 
             this.lexema = "";
             this.fila = 1;
@@ -31,10 +41,8 @@ namespace Proyecto1_201602503
             this.arrayColumnaError = new ArrayList();
 
         }
-
-        // Metodos de la clase automata
-
         public void analisisLexico(string archivoTexto) {
+            Inicializar();
             int estado = 0; // Variable para indicar el numero de estado al que se dirigira cada caracter
             int restColumna = 0; // Variable para restar al numero de columna en caso de ser un token compuesto por varios simbolos
             for (int i = 0; i < archivoTexto.Length; i++) { // Ciclo para recorrer todo el archivo
@@ -46,6 +54,7 @@ namespace Proyecto1_201602503
                         if (codigoASCII == 60){ // Si el simbolo es <
                             estado = 1;
                             lexema = "" + simbolo;
+                            //Console.WriteLine("Encontro <");
                         }
                         else if (codigoASCII == 47) // Si el simbolo es /
                         { 
@@ -84,9 +93,8 @@ namespace Proyecto1_201602503
                                 lexema = "";
                             }
                         }
-                        else if (codigoASCII == 10) // Si es un salto de linea
+                        else if (codigoASCII == 10) //Si es un salto de linea
                         {
-                            Console.WriteLine("Econtre salto de linea");
                             fila += 1;
                             columna = 0;
                         }
@@ -100,16 +108,21 @@ namespace Proyecto1_201602503
                         if (codigoASCII == 33) { // Si es igual a !
                             estado = 5;
                             lexema += simbolo;
+                            //Console.WriteLine("Encontro !");
                         }
                         else {
                             if (codigoASCII == 10) { // Si es igual a salto de linea
-                                fila += 1;                               
+                                fila += 1;
+                                columna = 0;
                             }
                             arrayLexemas.Add(lexema);
+                            //falta agregar un simbolo
                             arrayToken.Add("Tk_Simbolo");
                             arrayFila.Add(fila);
                             arrayColumna.Add(columna);
+                            lexema = "";
                             estado = 0;
+                            //Console.WriteLine("Encontro /n");
                         }
                         break;
                     case 2:
@@ -138,7 +151,7 @@ namespace Proyecto1_201602503
                             restColumna += 1;
                             lexema += simbolo;
                         }
-                        else if (((codigoASCII >= 32) && (codigoASCII <= 33)) || ((codigoASCII >= 35) && (codigoASCII <= 46)) || ((codigoASCII >= 58) && (codigoASCII <= 59)) || ((codigoASCII >= 61) && (codigoASCII <= 64)) || ((codigoASCII >= 91) && (codigoASCII <= 94)) || (codigoASCII == 96) || ((codigoASCII >= 123) && (codigoASCII <= 126)))
+                        else if (((codigoASCII >= 32) && (codigoASCII <= 33)) || ((codigoASCII >= 35) && (codigoASCII <= 46)) || ((codigoASCII >= 58) && (codigoASCII <= 59)) || ((codigoASCII >= 61) && (codigoASCII <= 64)) || ((codigoASCII >= 91) && (codigoASCII <= 94)) || (codigoASCII == 96) || ((codigoASCII >= 123) && (codigoASCII <= 126))) // Si es un simbolo
                         {
                             columna = columna - restColumna; // Resto el valor de restColumna a columna para definir la columna en un solo token
                             arrayLexemas.Add(lexema);
@@ -147,7 +160,7 @@ namespace Proyecto1_201602503
                             arrayFila.Add(fila);
                             restColumna = 0; // Inicializo la cuenta para otro token
                             estado = 0;
-                            if ((codigoASCII == 44) || (codigoASCII == 59) || (codigoASCII == 58) || (codigoASCII == 126))
+                            if (codigoASCII != 32)
                             {
                                 columna++;
                                 arrayLexemas.Add(simbolo);
@@ -179,17 +192,14 @@ namespace Proyecto1_201602503
                         if (codigoASCII == 33) // Si el simbolo es !
                         {
                             estado = 6;
+                            lexema += simbolo;
+                            //Console.WriteLine("Encontro !");
                         }
-                        else if ((simbolo >= 34) && (simbolo <= 126) || (simbolo == 32)) // Si el simbolo es cualquier otro del lenguaje
+                        else // Si el simbolo es cualquier otro del lenguaje
                         {
                             estado = 5;
                             lexema += simbolo;
-                        }
-                        else {
-                            arrayError.Add("" + simbolo);
-                            arrayColumnaError.Add(columna);
-                            arrayFilaError.Add(fila);
-                            estado = 0;
+                            //Console.WriteLine("Encontro algun otro simbolo");
                         }
                         break;
                     case 6:
@@ -204,12 +214,14 @@ namespace Proyecto1_201602503
                             arrayFila.Add(fila);
                             lexema = "";
                             restColumna = 0;
+                            //Console.WriteLine("Encontro >");
                         }
                         else if (simbolo == 33) // Si el simbolo es !
                         {
                             estado = 6;
                             restColumna += 1;
                             lexema += simbolo;
+                            //Console.WriteLine("Encontro !");
                         }
                         else
                         {
@@ -220,17 +232,12 @@ namespace Proyecto1_201602503
                             restColumna += 1;
                             estado = 5;
                             lexema += simbolo;
+                            //Console.WriteLine("Encontro CM");
                         }
                         break;
                     case 7:
-                        if ((simbolo >= 32) && (simbolo <= 126)) // Cualquier simbolo dentro del lenguaje
-                        {
-                            restColumna += 1;
-                            estado = 7;
-                            lexema += simbolo;
-                        }
                         //FINAL DE COMENTARIO
-                        else if (simbolo == 10)
+                        if (codigoASCII == 10)
                         {
                             estado = 0;
                             columna = columna - restColumna;
@@ -241,11 +248,10 @@ namespace Proyecto1_201602503
                             lexema = "";
                             restColumna = 0;
                         }
-                        else
-                        {
-                            arrayError.Add("" + simbolo);
-                            arrayColumnaError.Add(columna);
-                            arrayFilaError.Add(fila);
+                        else {
+                            restColumna += 1;
+                            estado = 7;
+                            lexema += simbolo;
                         }
                         break;
                 }
@@ -254,12 +260,98 @@ namespace Proyecto1_201602503
 
         }
 
-        public void analisisSintacto(string texto){
+        public void analisisSintacto(){
+            int estado = 0;
+            string lexema = "";
+            for (int i = 0; i < arrayLexemas.Count; i++) {
+                switch (estado) {
+                    case 0:
+                        if (arrayLexemas[i].Equals("CONJ"))
+                        {
+                            estado = 1;
+                            lexema = "" + arrayLexemas[i];
+                           // Console.WriteLine(lexema);
+                        }
+                        else if (arrayToken[i].Equals("Tk_Id")){
+                            //Console.WriteLine("Encontro Id");
+                            estado = 2;
+                            lexema = "" + arrayLexemas[i];
+                        }
+                        break;
+                    case 1:
+                        if (arrayLexemas[i].Equals(';'))
+                        {
+                            estado = 0;
+                            //Console.WriteLine(lexema);
+                            arrayConj.Add(lexema); // Se agregan los conjuntos
+                           // Console.WriteLine(arrayConj);
+                            lexema = "";
+                        }
+                        else {
+                            estado = 1;
+                            //Console.WriteLine(lexema);
+                            lexema += arrayLexemas[i];
+                        }
+                        break;
+                    case 2:
+                        if (arrayLexemas[i].Equals('-')) {
+                            estado = 3;
+                            lexema += arrayLexemas[i];
+                            //Console.WriteLine(lexema);
+                        }
+                        else if (arrayLexemas[i].Equals(':')) { 
+                            estado = 5;
+                            lexema += arrayLexemas[i];
+                            //Console.WriteLine(lexema);
+                        }
+                        break;
+                    case 3:
+                        if (arrayLexemas[i].Equals('>'))
+                        {
+                            estado = 4;
+                            lexema += arrayLexemas[i];
+                            //Console.WriteLine(lexema);
+                        }
+                        else {
+                            estado = 0;
+                            lexema = "";
+                        }   
+                        break;
+                    case 4:
+                        if (arrayLexemas[i].Equals(';'))
+                        {
+                            estado = 0;
+                            lexema += arrayLexemas[i];
+                            arrayExp.Add(lexema); // Se agrega la expresion regular
+                            lexema = "";
+                            
+                        }
+                        else {
+                            estado = 4;
+                            lexema += arrayLexemas[i];
+                            //Console.WriteLine(lexema);
+                        }
+                        break;
+                    case 5:
+                        if (arrayLexemas[i].Equals(';'))
+                        {
+                            estado = 0;
+                            lexema += arrayLexemas[i];
+                            arrayLex.Add(lexema); // Se agrega el lexema
+                            lexema = "";
+                            
+                        }
+                        else
+                        {
+                            estado = 5;
+                            lexema += arrayLexemas[i];
+                        }
+                        break;
+            }
 
-
-
+            }
         }
-        // Metodos getters
+        // ---------------Metodos getters---------------
         public ArrayList getArrayToken() {
             return arrayToken;
         }
@@ -276,8 +368,38 @@ namespace Proyecto1_201602503
             return arrayColumna;
         }
 
+
+        public ArrayList getArrayConj()
+        {
+            return arrayConj;
+        }
+        public ArrayList getArrayExp()
+        {
+            return arrayExp;
+        }
+        public ArrayList getArrayLex()
+        {
+            return arrayLex;
+        }
+
         // Metodos para los reportes
         public void reporteHtml() {
+            Console.WriteLine("CONJUNTOS");
+            for (int i = 0; i < arrayConj.Count; i ++) {
+                Console.WriteLine(arrayConj[i]);
+            }
+            Console.WriteLine();
+            Console.WriteLine("Exp Reg");
+            for (int i = 0; i < arrayExp.Count; i ++) {
+                Console.WriteLine(arrayExp[i]);
+            }
+            Console.WriteLine();
+            Console.WriteLine("Lexemas");
+            for (int i = 0; i < arrayLex.Count; i++)
+            {
+                Console.WriteLine(arrayLex[i]);
+            }
+
             StreamWriter sw = new StreamWriter(@"C:\Users\Pablo Barillas\Desktop\Rep_Token.html");
             string cadena = "";
             cadena += "<TABLE BORDER='5'    WIDTH='50 % '   CELLPADDING='4'CELLSPACING='3'>\n";
@@ -293,16 +415,25 @@ namespace Proyecto1_201602503
             cadena += "</TR>\n";
             for (int i = 0; i < arrayLexemas.Count; i++)
             {
+                
                 cadena += " <TR ALIGN='CENTER'>\n";
                 cadena += " <TD>" + arrayToken[i] + "</TD>";
-                cadena += " <TD>" + arrayLexemas[i] + "</TD>";
+                if ((arrayLexemas[i].Equals(">")) || (arrayLexemas[i].Equals("<")))
+                {
+                    cadena += "<TD> mayor que o menor que </TD>";
+                }
+                else {
+                    cadena += " <TD>" + arrayLexemas[i] + "</TD>";
+                }
+                             
+                //Console.WriteLine("Numero: " + i + arrayLexemas[i]);
                 cadena += " <TD>" + arrayColumna[i] + "</TD>";
                 cadena += " <TD>" + arrayFila[i] + "</TD>";
                 cadena += " </TR>";
             }
             cadena += "</TABLE>";
             sw.WriteLine(cadena);
-            cadena = "";          
+            cadena = "";
         }
 
 

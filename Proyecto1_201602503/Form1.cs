@@ -123,8 +123,37 @@ namespace Proyecto1_201602503
 
         private void generarPDFToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            automata.analisisLexico(tabControl.SelectedTab.Controls.OfType<RichTextBox>().Reverse().FirstOrDefault().Text);
+            // Metodo que genera el reporte HTML para los archivos de entrada
             automata.reporteHtml();
+        }
+
+        public string Output(ArrayList Conjuntos, ArrayList Expresiones, ArrayList Lexemas) {
+            string texto = "";
+            texto += "\n";
+            texto += "Conjuntos: \n";
+            for (int i = 0; i < Conjuntos.Count; i ++) {
+                texto += Conjuntos[i] + "\n";
+            }
+            texto += "\n";
+            texto += "Expresiones Regulares: \n";
+            for (int i = 0; i < Expresiones.Count; i++)
+            {
+                texto += Expresiones[i] + "\n";
+            }
+            texto += "\n";
+            texto += "Lexemas: \n";
+            for (int i = 0; i < Lexemas.Count; i++)
+            {
+                texto += Lexemas[i] + "\n";
+            }
+            return texto;
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            // SE INICIA EL ANALISIS LEXICO Y SINTACTICO HASTA CIERTO PUNTO
+            automata.analisisLexico(tabControl.SelectedTab.Controls.OfType<RichTextBox>().Reverse().FirstOrDefault().Text); // Analisis Lexico
+            automata.analisisSintacto(); // Analisis sintactico no recibe parametros porque se hace despues del analis lexico
+            Consola.Text = Output(automata.getArrayConj(), automata.getArrayExp(), automata.getArrayLex());
         }
 
         private void button1_Click(object sender, EventArgs e)
