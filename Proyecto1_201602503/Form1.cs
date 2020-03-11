@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections;
+using Proyecto1_201602503.Estructuras;
 
 
 namespace Proyecto1_201602503
@@ -127,25 +128,32 @@ namespace Proyecto1_201602503
             automata.reporteHtml();
         }
 
-        public string Output(ArrayList Conjuntos, ArrayList Expresiones, ArrayList Lexemas) {
+        public string Output(Lista_Simple Conjuntos, Lista_Simple Expresiones) {
             string texto = "";
             texto += "\n";
             texto += "Conjuntos: \n";
-            for (int i = 0; i < Conjuntos.Count; i ++) {
-                texto += Conjuntos[i] + "\n";
+            for (int i = 0; i < Conjuntos.getSize(); i ++) {
+                texto += "Nombre: " + Conjuntos.obtenerNodo(i).getNombre() + "\n";
+                for (int j = 0; j < Conjuntos.obtenerNodo(i).getElementos().Count; j ++) {
+                    texto += Conjuntos.obtenerNodo(i).getElementos()[j] + "\n";
+                }
             }
             texto += "\n";
             texto += "Expresiones Regulares: \n";
-            for (int i = 0; i < Expresiones.Count; i++)
+            for (int i = 0; i < Expresiones.getSize(); i++)
             {
-                texto += Expresiones[i] + "\n";
+                texto += "Nombre: " + Expresiones.obtenerNodo(i).getNombre() + "\n";
+                for (int j = 0; j < Expresiones.obtenerNodo(i).getElementos().Count; j++)
+                {
+                    texto += Expresiones.obtenerNodo(i).getElementos()[j] + "\n";
+                }
             }
             texto += "\n";
-            texto += "Lexemas: \n";
-            for (int i = 0; i < Lexemas.Count; i++)
+            /*texto += "Lexemas: \n";
+            for (int i = 0; i < Lexemas.getSize(); i++)
             {
-                texto += Lexemas[i] + "\n";
-            }
+                texto += Lexemas.obtenerNodo(i) + "\n";
+            }*/
             return texto;
         }
         private void button3_Click(object sender, EventArgs e)
@@ -153,7 +161,43 @@ namespace Proyecto1_201602503
             // SE INICIA EL ANALISIS LEXICO Y SINTACTICO HASTA CIERTO PUNTO
             automata.analisisLexico(tabControl.SelectedTab.Controls.OfType<RichTextBox>().Reverse().FirstOrDefault().Text); // Analisis Lexico
             automata.analisisSintacto(); // Analisis sintactico no recibe parametros porque se hace despues del analis lexico
-            Consola.Text = Output(automata.getArrayConj(), automata.getArrayExp(), automata.getArrayLex());
+            Consola.Text = Output(automata.getListaConjuntos(), automata.getListaExpresiones());
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            /*ArrayList p1 = new ArrayList();
+            p1.Add(".");
+            p1.Add(".");
+            p1.Add(".");
+            p1.Add("@");
+
+            ArrayList p2 = new ArrayList();
+            p2.Add("p");
+            p2.Add("a");
+            p2.Add("b");
+            p2.Add("l");
+            p2.Add("o");
+
+            ArrayList p3 = new ArrayList();
+            p3.Add("m");
+            p3.Add("a");
+            p3.Add("r");
+            p3.Add("i");
+            p3.Add("a");
+
+            Lista_Simple lista = new Lista_Simple();
+            lista.Insertar("Nodo1", p1);
+            lista.Insertar("Nodo2", p2);
+            lista.Insertar("Nodo3", p3);
+
+            for (int i = 0; i < lista.getSize(); i ++) {
+                Console.WriteLine("El nodo " + i + ", Se llama: " + lista.obtenerNodo(i).getNombre() + " y tiene: ");
+                foreach(Object o in lista.obtenerNodo(i).getElementos()){
+                    Console.Write(o);
+                }
+                Console.WriteLine();
+            } */
         }
 
         private void button1_Click(object sender, EventArgs e)

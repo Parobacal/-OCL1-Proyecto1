@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
 using System.IO;
+using Proyecto1_201602503.Estructuras;
 
 namespace Proyecto1_201602503
 {
@@ -15,14 +16,17 @@ namespace Proyecto1_201602503
         private string lexema; // String para guardar y concatenar cada lexema leido
         private int fila, columna; // Contadores para poder identificar la fila y la columna
         private ArrayList arrayLexemas, arrayToken, arrayFila, arrayColumna, arrayError, arrayFilaError, arrayColumnaError, arrayExp, arrayLex, arrayConj; // Arreglos para guardar toda la lista de simbolos
+        private Lista_Simple listaConjuntos, listaLexemas, listaExpresiones; // Listas para guardar los valores que nos dan en el archivo de entrada
 
         // ---------------Constructor de la clase automata---------------
         public Automata(){  
-            // Solamente se inicializan estos arreglos una vez que se inicia la ejecucion del programa
+            // Solamente se inicializan estos arreglos y listas una vez que se inicia la ejecucion del programa
             this.arrayConj = new ArrayList();
             this.arrayExp = new ArrayList();
             this.arrayLex = new ArrayList();
-
+            this.listaConjuntos = new Lista_Simple();
+            this.listaLexemas = new Lista_Simple();
+            this.listaExpresiones = new Lista_Simple();
         }
 
         // ---------------Metodos de la clase automata---------------
@@ -284,7 +288,8 @@ namespace Proyecto1_201602503
                             estado = 0;
                             //Console.WriteLine(lexema);
                             arrayConj.Add(lexema); // Se agregan los conjuntos
-                           // Console.WriteLine(arrayConj);
+                            char c = 'c';
+                            Asignar(lexema, c); // Asignamos los conjuntos correctamente
                             lexema = "";
                         }
                         else {
@@ -323,6 +328,8 @@ namespace Proyecto1_201602503
                             estado = 0;
                             lexema += arrayLexemas[i];
                             arrayExp.Add(lexema); // Se agrega la expresion regular
+                            char c = 'e';
+                            Asignar(lexema, c); // Asignamos las expresiones correctamente
                             lexema = "";
                             
                         }
@@ -338,6 +345,8 @@ namespace Proyecto1_201602503
                             estado = 0;
                             lexema += arrayLexemas[i];
                             arrayLex.Add(lexema); // Se agrega el lexema
+                            char c = 'l';
+                            //Asignar(lexema, c); // Asignamos los lexemas correctamente
                             lexema = "";
                             
                         }
@@ -351,6 +360,202 @@ namespace Proyecto1_201602503
 
             }
         }
+
+
+        public void Asignar(string lexema, char Tipo) {
+            string nombre;
+            ArrayList elementos;
+            if (Tipo.Equals('c'))
+            {
+                nombre = "";
+                char primera_letra = ' ';
+                char letra_extra = ' ';
+                string lex = "";
+                elementos = new ArrayList();
+                // Asignamos los conjuntos:
+                int estado = 0;
+                for (int i = 0; i < lexema.Length; i++)
+                {
+                    char simbolo = lexema[i];
+                    switch (estado)
+                    {
+                        case 0:
+                            if (simbolo.Equals(':'))
+                            {
+                                estado = 1;
+                            }
+                            else if (simbolo.Equals('>'))
+                            {
+                                estado = 2;
+                            }
+                            else
+                            {
+                                estado = 0;
+                            }
+                            break;
+                        case 1:
+                            if (simbolo.Equals('-'))
+                            {
+                                estado = 0;
+                            }
+                            else
+                            {
+                                nombre += simbolo;
+                                estado = 1;
+                            }
+                            break;
+                        case 2:
+                            if (simbolo.Equals(','))
+                            {
+                                estado = 3;
+                            }
+                            else if (simbolo.Equals('~'))
+                            {
+                                estado = 4;
+                            }
+                            else if (simbolo.Equals('['))
+                            {
+                                estado = 5;
+                            }
+                            else
+                            {
+                                primera_letra = simbolo;
+                                elementos.Add(simbolo);
+                                estado = 2;
+                            }
+                            break;
+                        case 3:
+                            if (simbolo.Equals(','))
+                            {
+                                estado = 3;
+                            }
+                            else if (simbolo.Equals(';'))
+                            {
+                                Console.WriteLine("Llegue aqui");
+                                listaConjuntos.Insertar(nombre, elementos); // Inserto el conjunto
+                                nombre = "";
+                            }
+                            else
+                            {
+                                elementos.Add(simbolo);
+                                estado = 3;
+                            }
+                            break;
+                        case 4:
+                            int codigoASCII_U = simbolo;
+                            int codigoASCII_P = primera_letra;
+                            for (int j = codigoASCII_P; j <= codigoASCII_U; j++)
+                            {
+                                char c = (char)j;
+                                elementos.Add(c);
+                            }
+                            listaConjuntos.Insertar(nombre, elementos); // Inserto el conjunto
+                            estado = 0;
+                            break;
+                        case 5:
+                            estado = 6;
+                            break;
+                        case 6:
+                            if (simbolo.Equals(':'))
+                            {
+                                estado = 7;
+                                letra_extra = simbolo;
+                            }
+                            else
+                            {
+                                estado = 6;
+                                lex += simbolo;
+                            }
+                            break;
+                        case 7:
+                            if (simbolo.Equals(']'))
+                            {
+                                estado = 0;
+                                elementos.Add(lex);
+                                listaConjuntos.Insertar(nombre, elementos); // inserto el conjunto
+                            }
+                            else if (simbolo.Equals(':'))
+                            {
+                                estado = 7;
+                                lex += letra_extra;
+                            }
+                            else
+                            {
+                                estado = 6;
+                                lex += simbolo;
+                            }
+                            break;
+                    }
+                }
+            }
+            else if (Tipo.Equals('e'))
+            {
+                // Asignamos las expresiones regulares:
+                nombre = "";
+                elementos = new ArrayList();
+                string lex = "";
+                int estado = 0;
+                for (int i = 0; i < lexema.Length; i++)
+                {
+                    char simbolo = lexema[i];
+                    switch (estado)
+                    {
+                        case 0:
+                            if (simbolo.Equals('-'))
+                            {
+                                estado = 1;
+                            }
+                            else {
+                                nombre += simbolo;
+                            }
+                            break;
+                        case 1:
+                            estado = 2;
+                            break;
+                        case 2:
+                            if ((simbolo.Equals('{')) || (simbolo.Equals('"')))
+                            {
+                                estado = 3;
+                                lex += simbolo;
+                            }
+                            else if (simbolo.Equals(' '))
+                            {
+                                estado = 2;
+                            }
+                            else if (simbolo.Equals(';')) {
+                                listaExpresiones.Insertar(nombre, elementos);
+                                estado = 0;
+                            }
+                            else {
+                                estado = 2;
+                                elementos.Add(simbolo);
+                            }
+                            break;
+                        case 3:
+                            if ((simbolo.Equals('}')) || (simbolo.Equals('"')))
+                            {
+                                lex += simbolo;
+                                elementos.Add(lex);
+                                lex = "";
+                                estado = 2;
+                            }
+                            else {
+                                lex += simbolo;
+                                estado = 3;
+                            }
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                // Asignamos los lexemas:
+
+            }
+
+        }
+
+
         // ---------------Metodos getters---------------
         public ArrayList getArrayToken() {
             return arrayToken;
@@ -382,23 +587,18 @@ namespace Proyecto1_201602503
             return arrayLex;
         }
 
+
+        public Lista_Simple getListaConjuntos()
+        {
+            return listaConjuntos;
+        }
+        public Lista_Simple getListaExpresiones()
+        {
+            return listaExpresiones;
+        }
+
         // Metodos para los reportes
         public void reporteHtml() {
-            Console.WriteLine("CONJUNTOS");
-            for (int i = 0; i < arrayConj.Count; i ++) {
-                Console.WriteLine(arrayConj[i]);
-            }
-            Console.WriteLine();
-            Console.WriteLine("Exp Reg");
-            for (int i = 0; i < arrayExp.Count; i ++) {
-                Console.WriteLine(arrayExp[i]);
-            }
-            Console.WriteLine();
-            Console.WriteLine("Lexemas");
-            for (int i = 0; i < arrayLex.Count; i++)
-            {
-                Console.WriteLine(arrayLex[i]);
-            }
 
             StreamWriter sw = new StreamWriter(@"C:\Users\Pablo Barillas\Desktop\Rep_Token.html");
             string cadena = "";
