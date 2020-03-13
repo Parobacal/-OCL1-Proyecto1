@@ -125,6 +125,12 @@ namespace Proyecto1_201602503
                             arrayFila.Add(fila);
                             arrayColumna.Add(columna);
                             lexema = "";
+
+                            arrayLexemas.Add(simbolo);
+                            //falta agregar un simbolo
+                            arrayToken.Add("Tk_Simbolo");
+                            arrayFila.Add(fila);
+                            arrayColumna.Add(columna + 1);
                             estado = 0;
                             //Console.WriteLine("Encontro /n");
                         }
@@ -141,10 +147,17 @@ namespace Proyecto1_201602503
                             { // Si es igual a salto de linea
                                 fila += 1;
                             }
+                            
                             arrayLexemas.Add(lexema);
                             arrayToken.Add("Tk_Simbolo");
                             arrayFila.Add(fila);
                             arrayColumna.Add(columna);
+
+                            arrayLexemas.Add(simbolo);
+                            arrayToken.Add("Tk_Simbolo");
+                            arrayFila.Add(fila);
+                            arrayColumna.Add(columna + 1);
+
                             estado = 0;
                         }
                         break;
@@ -186,7 +199,20 @@ namespace Proyecto1_201602503
                             restColumna = 0; // Inicializo la cuenta para otro token
                             estado = 0;
                         }
-                        else {
+                        else if (codigoASCII == 59) {
+                            arrayLexemas.Add(lexema);
+                            arrayToken.Add("Tk_Simbolo");
+                            arrayColumna.Add(columna);
+                            arrayFila.Add(fila);
+
+                            arrayLexemas.Add(simbolo);
+                            arrayToken.Add("Tk_Simbolo");
+                            arrayColumna.Add(columna + 1);
+                            arrayFila.Add(fila);
+                            estado = 0;
+                        }
+                        else
+                        {
                             estado = 4;
                             restColumna += 1;
                             lexema += simbolo;
@@ -286,7 +312,9 @@ namespace Proyecto1_201602503
                         if (arrayLexemas[i].Equals(';'))
                         {
                             estado = 0;
-                            //Console.WriteLine(lexema);
+                            lexema += arrayLexemas[i];
+                            
+
                             arrayConj.Add(lexema); // Se agregan los conjuntos
                             char c = 'c';
                             Asignar(lexema, c); // Asignamos los conjuntos correctamente
@@ -344,9 +372,10 @@ namespace Proyecto1_201602503
                         {
                             estado = 0;
                             lexema += arrayLexemas[i];
+                            Console.WriteLine(lexema);
                             arrayLex.Add(lexema); // Se agrega el lexema
                             char c = 'l';
-                            //Asignar(lexema, c); // Asignamos los lexemas correctamente
+                            Asignar(lexema, c); // Asignamos los lexemas correctamente
                             lexema = "";
                             
                         }
@@ -405,9 +434,11 @@ namespace Proyecto1_201602503
                             }
                             break;
                         case 2:
+                            int codigoASCII = simbolo;
                             if (simbolo.Equals(','))
                             {
                                 estado = 3;
+                                elementos.Add(primera_letra);
                             }
                             else if (simbolo.Equals('~'))
                             {
@@ -417,21 +448,26 @@ namespace Proyecto1_201602503
                             {
                                 estado = 5;
                             }
+                            else if (codigoASCII.Equals(92)) // \
+                            {
+                                estado = 8;
+                                primera_letra = simbolo;
+                            }
                             else
                             {
                                 primera_letra = simbolo;
-                                elementos.Add(simbolo);
+                                //elementos.Add(simbolo);
                                 estado = 2;
                             }
                             break;
                         case 3:
                             if (simbolo.Equals(','))
                             {
+                                //Console.WriteLine("Llegue aqui");
                                 estado = 3;
                             }
                             else if (simbolo.Equals(';'))
                             {
-                                Console.WriteLine("Llegue aqui");
                                 listaConjuntos.Insertar(nombre, elementos); // Inserto el conjunto
                                 nombre = "";
                             }
@@ -442,8 +478,12 @@ namespace Proyecto1_201602503
                             }
                             break;
                         case 4:
+                            //Console.WriteLine(simbolo);
+                            //Console.WriteLine("Estado 4");
                             int codigoASCII_U = simbolo;
                             int codigoASCII_P = primera_letra;
+                            //Console.WriteLine(codigoASCII_P);
+                            //Console.WriteLine(codigoASCII_U);
                             for (int j = codigoASCII_P; j <= codigoASCII_U; j++)
                             {
                                 char c = (char)j;
@@ -470,9 +510,13 @@ namespace Proyecto1_201602503
                         case 7:
                             if (simbolo.Equals(']'))
                             {
+                                
                                 estado = 0;
                                 elementos.Add(lex);
                                 listaConjuntos.Insertar(nombre, elementos); // inserto el conjunto
+                                letra_extra = ' ';
+                                lex = "";
+                                nombre = "";
                             }
                             else if (simbolo.Equals(':'))
                             {
@@ -483,6 +527,24 @@ namespace Proyecto1_201602503
                             {
                                 estado = 6;
                                 lex += simbolo;
+                            }
+                            break;
+                        case 8:
+                            if (simbolo.Equals('~'))
+                            {
+                                estado = 4;
+                            }
+                            else
+                            {
+                                string cadena = "";
+                                cadena += primera_letra;
+                                cadena += simbolo;
+                                elementos.Add(cadena);
+                                listaConjuntos.Insertar(nombre, elementos); // inserto el conjunto
+                                cadena = "";
+                                nombre = "";
+                                primera_letra = ' ';
+                                estado = 0;
                             }
                             break;
                     }
@@ -505,7 +567,8 @@ namespace Proyecto1_201602503
                             {
                                 estado = 1;
                             }
-                            else {
+                            else
+                            {
                                 nombre += simbolo;
                             }
                             break;
@@ -522,11 +585,13 @@ namespace Proyecto1_201602503
                             {
                                 estado = 2;
                             }
-                            else if (simbolo.Equals(';')) {
+                            else if (simbolo.Equals(';'))
+                            {
                                 listaExpresiones.Insertar(nombre, elementos);
                                 estado = 0;
                             }
-                            else {
+                            else
+                            {
                                 estado = 2;
                                 elementos.Add(simbolo);
                             }
@@ -539,7 +604,8 @@ namespace Proyecto1_201602503
                                 lex = "";
                                 estado = 2;
                             }
-                            else {
+                            else
+                            {
                                 lex += simbolo;
                                 estado = 3;
                             }
@@ -550,7 +616,45 @@ namespace Proyecto1_201602503
             else
             {
                 // Asignamos los lexemas:
+                nombre = "";
+                elementos = new ArrayList();
+                string lex = "";
+                int estado = 0;
+                for (int i = 0; i < lexema.Length; i++)
+                {
+                    char simbolo = lexema[i];
+                    switch (estado)
+                    {
+                        case 0:
+                            if (simbolo.Equals(':')) {
+                                estado = 1;
+                            } else {
+                                nombre += simbolo;
+                                estado = 0;
+                            }
+                            break;
+                        case 1:
+                            estado = 2;
+                            break;
+                        case 2:
+                            if (simbolo.Equals('"'))
+                            {
+                                Console.WriteLine("si llegue");
+                                estado = 0;
+                                listaLexemas.Insertar(nombre, elementos);
+                                nombre = "";
+                            }
+                            else
+                            {                
+                                //Aqui podemos definir si guarda caracter por caracter o todo en un solo string
+                                estado = 2;
+                                elementos.Add(simbolo);
 
+                            }
+                            break;
+
+                    }
+                }
             }
 
         }
@@ -595,6 +699,10 @@ namespace Proyecto1_201602503
         public Lista_Simple getListaExpresiones()
         {
             return listaExpresiones;
+        }
+        public Lista_Simple getListaLexemas()
+        {
+            return listaLexemas;
         }
 
         // Metodos para los reportes

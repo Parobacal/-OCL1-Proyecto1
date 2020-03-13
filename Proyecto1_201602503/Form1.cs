@@ -128,11 +128,12 @@ namespace Proyecto1_201602503
             automata.reporteHtml();
         }
 
-        public string Output(Lista_Simple Conjuntos, Lista_Simple Expresiones) {
+        public string Output(Lista_Simple Conjuntos, Lista_Simple Expresiones, Lista_Simple Lexemas) {
             string texto = "";
             texto += "\n";
             texto += "Conjuntos: \n";
             for (int i = 0; i < Conjuntos.getSize(); i ++) {
+
                 texto += "Nombre: " + Conjuntos.obtenerNodo(i).getNombre() + "\n";
                 for (int j = 0; j < Conjuntos.obtenerNodo(i).getElementos().Count; j ++) {
                     texto += Conjuntos.obtenerNodo(i).getElementos()[j] + "\n";
@@ -149,6 +150,16 @@ namespace Proyecto1_201602503
                 }
             }
             texto += "\n";
+            texto += "Lexemas: \n";
+            for (int i = 0; i < Lexemas.getSize(); i++)
+            {
+                texto += "Nombre: " + Lexemas.obtenerNodo(i).getNombre() + "\n";
+                for (int j = 0; j < Lexemas.obtenerNodo(i).getElementos().Count; j++)
+                {
+                    texto += Lexemas.obtenerNodo(i).getElementos()[j] + "\n";
+                }
+            }
+            texto += "\n";
             /*texto += "Lexemas: \n";
             for (int i = 0; i < Lexemas.getSize(); i++)
             {
@@ -161,7 +172,7 @@ namespace Proyecto1_201602503
             // SE INICIA EL ANALISIS LEXICO Y SINTACTICO HASTA CIERTO PUNTO
             automata.analisisLexico(tabControl.SelectedTab.Controls.OfType<RichTextBox>().Reverse().FirstOrDefault().Text); // Analisis Lexico
             automata.analisisSintacto(); // Analisis sintactico no recibe parametros porque se hace despues del analis lexico
-            Consola.Text = Output(automata.getListaConjuntos(), automata.getListaExpresiones());
+            Consola.Text = Output(automata.getListaConjuntos(), automata.getListaExpresiones(), automata.getListaLexemas());
         }
 
         private void button4_Click(object sender, EventArgs e)
