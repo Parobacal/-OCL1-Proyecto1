@@ -290,19 +290,19 @@
             // 
             this.button3.Location = new System.Drawing.Point(26, 556);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(207, 45);
+            this.button3.Size = new System.Drawing.Size(201, 45);
             this.button3.TabIndex = 14;
-            this.button3.Text = "Cargar Thompson";
+            this.button3.Text = "Analizar Archivo";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(349, 556);
+            this.button4.Location = new System.Drawing.Point(243, 557);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(160, 44);
+            this.button4.Size = new System.Drawing.Size(228, 44);
             this.button4.TabIndex = 15;
-            this.button4.Text = "button4";
+            this.button4.Text = "Generar Thomphson";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 

@@ -20,6 +20,8 @@ namespace Proyecto1_201602503
         public int contador_img = 0;
         public int contador_img1 = 0;
         public string img,img1;
+        public int totalImagen = 0;
+        private bool analisis = false;
         Automata automata = new Automata();
         public Form1()
         {
@@ -56,7 +58,7 @@ namespace Proyecto1_201602503
         private void btnsiguiente_Click(object sender, EventArgs e)
         {
             contador_img++;
-            if (contador_img < 3)
+            if (contador_img < totalImagen)
             {
 
                 img = "A" + contador_img + ".png";
@@ -99,7 +101,7 @@ namespace Proyecto1_201602503
         private void button2_Click(object sender, EventArgs e)
         {
             contador_img1++;
-            if (contador_img1 < 2)
+            if (contador_img1 < totalImagen)
             {
 
                 img1 = "A" + contador_img1 + ".png";
@@ -170,6 +172,7 @@ namespace Proyecto1_201602503
         }
         private void button3_Click(object sender, EventArgs e)
         {
+            analisis = true;
             // SE INICIA EL ANALISIS LEXICO Y SINTACTICO HASTA CIERTO PUNTO
             automata.analisisLexico(tabControl.SelectedTab.Controls.OfType<RichTextBox>().Reverse().FirstOrDefault().Text); // Analisis Lexico
             automata.analisisSintacto(); // Analisis sintactico no recibe parametros porque se hace despues del analis lexico
@@ -178,47 +181,16 @@ namespace Proyecto1_201602503
 
         private void button4_Click(object sender, EventArgs e)
         {
-            /*ArrayList p1 = new ArrayList();
-            p1.Add(".");
-            p1.Add(".");
-            p1.Add(".");
-            p1.Add("@");
 
-            ArrayList p2 = new ArrayList();
-            p2.Add("p");
-            p2.Add("a");
-            p2.Add("b");
-            p2.Add("l");
-            p2.Add("o");
-
-            ArrayList p3 = new ArrayList();
-            p3.Add("m");
-            p3.Add("a");
-            p3.Add("r");
-            p3.Add("i");
-            p3.Add("a");
-
-            Lista_Simple lista = new Lista_Simple();
-            lista.Insertar("Nodo1", p1);
-            lista.Insertar("Nodo2", p2);
-            lista.Insertar("Nodo3", p3);
-
-            for (int i = 0; i < lista.getSize(); i ++) {
-                Console.WriteLine("El nodo " + i + ", Se llama: " + lista.obtenerNodo(i).getNombre() + " y tiene: ");
-                foreach(Object o in lista.obtenerNodo(i).getElementos()){
-                    Console.Write(o);
-                }
-                Console.WriteLine();
-            } */
-
-            Thompson t1 = new Thompson();
-            t1.ER.Add(".");
-            t1.ER.Add("a");
-            t1.ER.Add("*");
-            t1.ER.Add("b");
-            t1.Raiz = t1.Insertar();
-            t1.graficarAFND("A2");
-            
+            if (analisis.Equals(true))
+            {
+                generarThomphson();
+                analisis = false;
+            }
+            else
+            {
+                MessageBox.Show("No se ha analizado el archivo");
+            }          
 
         }
 
@@ -236,6 +208,36 @@ namespace Proyecto1_201602503
             }
             pictureBox2.Image = Image.FromFile(@"C:\Users\Pablo Barillas\Desktop\Tablas_estados\" + img1);
             pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+        }
+
+        private void generarThomphson() {
+
+            List<Thompson> listaThompshon = new List<Thompson>();
+            // Se recorre la lista que tiene las exp regulares
+            for (int i = 0; i < automata.getListaExpresiones().getSize(); i ++) {
+                // Se genera una instancia nueva del metodo por cada expresion o nodo de la lista de expresiones
+                Thompson nuevoThompson = new Thompson();
+                // Se recorre cada elemento del atributo lista de cada nodo de la lista de exp reg
+                for (int j = 0; j < automata.getListaExpresiones().obtenerNodo(i).getElementos().Count; j ++) {
+                    // Se inserta en la lista de er propia del metodo cada elemento obtenido del recorrido
+                    nuevoThompson.ER.Add(automata.getListaExpresiones().obtenerNodo(i).getElementos()[j]);
+                }
+                //Se envia a generar y graficar el metodo
+                nuevoThompson.Raiz = nuevoThompson.Insertar();
+                //Se guarda en la lista el nuevo thompshon
+                listaThompshon.Add(nuevoThompson);
+                // Se guarda el total de imagenes creadas
+                totalImagen = i;
+            }
+
+            for (int i = 0; i < listaThompshon.Count; i ++) {
+                    //Console.Write(listaThompshon[i].ER[j]);
+                    listaThompshon[i].graficarAFND("A" + i); 
+                
+                //Console.WriteLine();
+
+            }
+        
         }
     }
 }

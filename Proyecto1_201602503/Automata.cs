@@ -372,7 +372,7 @@ namespace Proyecto1_201602503
                         {
                             estado = 0;
                             lexema += arrayLexemas[i];
-                            Console.WriteLine(lexema);
+                            //Console.WriteLine(lexema);
                             arrayLex.Add(lexema); // Se agrega el lexema
                             char c = 'l';
                             Asignar(lexema, c); // Asignamos los lexemas correctamente
@@ -576,10 +576,14 @@ namespace Proyecto1_201602503
                             estado = 2;
                             break;
                         case 2:
-                            if ((simbolo.Equals('{')) || (simbolo.Equals('"')))
+                            if (simbolo.Equals('{'))
                             {
                                 estado = 3;
                                 lex += simbolo;
+                            }
+                            else if (simbolo.Equals('"')) 
+                            {
+                                estado = 3;
                             }
                             else if (simbolo.Equals(' '))
                             {
@@ -597,9 +601,15 @@ namespace Proyecto1_201602503
                             }
                             break;
                         case 3:
-                            if ((simbolo.Equals('}')) || (simbolo.Equals('"')))
+                            if (simbolo.Equals('}'))
                             {
                                 lex += simbolo;
+                                elementos.Add(lex);
+                                lex = "";
+                                estado = 2;
+                            }
+                            else if (simbolo.Equals('"')) 
+                            {
                                 elementos.Add(lex);
                                 lex = "";
                                 estado = 2;
@@ -639,7 +649,7 @@ namespace Proyecto1_201602503
                         case 2:
                             if (simbolo.Equals('"'))
                             {
-                                Console.WriteLine("si llegue");
+                                //Console.WriteLine("si llegue");
                                 estado = 0;
                                 listaLexemas.Insertar(nombre, elementos);
                                 nombre = "";

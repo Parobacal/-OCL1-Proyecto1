@@ -10,7 +10,7 @@ namespace Proyecto1_201602503.AFD_N
 {
     class Thompson
     {
-        // Atributos de la clase 
+        //----------------------------Atributos de la clase 
         public AFND Raiz; // AFND Principal
         private int Contador;
         private StringBuilder grafo;
@@ -18,7 +18,7 @@ namespace Proyecto1_201602503.AFD_N
         private String cadena;
         public ArrayList ER; // Lista que contendra los caracteres
 
-        // Constructor de la clase
+        //----------------------------Constructor de la clase
         public Thompson()
         {
             this.Raiz = null;
@@ -27,13 +27,14 @@ namespace Proyecto1_201602503.AFD_N
             this.cadena = "";
             this.grafo = null;
             this.ER = new ArrayList();
-            Console.WriteLine(Contador + "estoy en el constructor");
+
         }
 
+        //----------------------------Metodos de la clase
         public AFND Insertar()
         {
-            Console.WriteLine(Contador + "estoy en el metodo");
-            if (ER[Contador].Equals("*"))
+            Console.WriteLine(ER[Contador]);
+            if (ER[Contador].Equals('*'))
             {
                 AFND automataPadre = new AFND();
                 Contador++;
@@ -41,8 +42,9 @@ namespace Proyecto1_201602503.AFD_N
                 automataPadre = afnd_Kleene(automataHijo);
                 return automataPadre;
             }
-            else if (ER[Contador].Equals("."))
+            else if (ER[Contador].Equals('.'))
             {
+                Console.WriteLine("LLEGUE AL PUNTO");
                 AFND automataPadre = new AFND();
                 Contador++;
                 AFND automataHijo1 = Insertar();
@@ -50,26 +52,36 @@ namespace Proyecto1_201602503.AFD_N
                 automataPadre = afnd_Punto(automataHijo1, automataHijo2);
                 return automataPadre;
             }
-            else if (ER[Contador].Equals("+"))
+            else if (ER[Contador].Equals('+'))
             {
+                AFND automataPadre = new AFND();
                 Contador++;
-                AFND Automata = new AFND();
-                return Automata;
+                AFND automataHijo = Insertar();
+                automataPadre = afnd_Suma(automataHijo);
+                return automataPadre;
             }
-            else if (ER[Contador].Equals("|"))
+            else if (ER[Contador].Equals('|'))
             {
+                AFND automataPadre = new AFND();
                 Contador++;
-                AFND Automata = new AFND();
-                return Automata;
+                AFND automataHijo1 = Insertar();
+                AFND automataHijo2 = Insertar();
+                automataPadre = afnd_Or(automataHijo1, automataHijo2);
+                return automataPadre;
             }
-            else if (ER[Contador].Equals("?"))
+            else if (ER[Contador].Equals('?'))
             {
+                AFND automataPadre = new AFND();
                 Contador++;
-                AFND Automata = new AFND();
-                return Automata;
+                AFND automataHijo1 = Insertar();
+                AFND automataHijo2 = new AFND();
+                automataHijo2 = afnd_Simbolo("ε");
+                automataPadre = afnd_Or(automataHijo1, automataHijo2);
+                return automataPadre;
             }
             else
-            {                
+            {
+                Console.WriteLine("LLEGUE Afuera");
                 AFND Automata = new AFND();
                 Automata = afnd_Simbolo(ER[Contador].ToString());
                 Contador++;
@@ -78,8 +90,10 @@ namespace Proyecto1_201602503.AFD_N
 
         }
 
+        // Metodos de incersion por cada operador
         public AFND afnd_Simbolo(string simbolo)
         {
+
             // Se crea un nuevo automata
             AFND Automata = new AFND();
             //Se generan los nuevos estados con sus indices respectivos
@@ -96,9 +110,10 @@ namespace Proyecto1_201602503.AFD_N
             Automata.setEstadosAceptacion(SF);
             //Se devuelve el automata
             return Automata;
+
         }
 
-        public AFND afnd_Kleene(AFND automataHijo){
+        public AFND afnd_Kleene(AFND automataHijo) {
 
             // Se crea un nuevo automata
             AFND automataNuevo = new AFND();
@@ -109,7 +124,7 @@ namespace Proyecto1_201602503.AFD_N
             automataNuevo.setEstadoInicial(estadoInicial);
             automataNuevo.setEstados(estadoInicial);
             // Agregamos cada uno de los estados que contiene el automata hijo al nuevo
-            for (int i = 0; i < automataHijo.getEstados().Count; i ++) {
+            for (int i = 0; i < automataHijo.getEstados().Count; i++) {
 
                 Estado nuevoEstado = new Estado();
                 nuevoEstado = automataHijo.getEstados()[i];
@@ -117,20 +132,20 @@ namespace Proyecto1_201602503.AFD_N
                 automataNuevo.setEstados(nuevoEstado);
 
             }
-
+            // Se crea el estado final y se asigna como tal al autoamta
             Estado estadoFinal = new Estado();
             estadoFinal.setIndice(automataHijo.getEstados().Count + 1);
             automataNuevo.setEstados(estadoFinal);
             automataNuevo.setEstadosAceptacion(estadoFinal);
-
+            // Se crea un nuevo estado para guardar el estado inicial del hijo
             Estado AI = new Estado();
             AI = automataHijo.getEstadoInicial();
             List<Estado> AF = automataHijo.getEstadosAceptacion();
-
+            // Se asignan las transiciones con epsilon
             estadoInicial.addTransition(estadoInicial, automataHijo.getEstadoInicial(), "ε");
             estadoInicial.addTransition(estadoInicial, estadoFinal, "ε");
-
-            for (int i = 0; i < AF.Count; i ++) {
+            // Se asignan las transiciones con epsilon para todos los estados de aceptacion del hijo
+            for (int i = 0; i < AF.Count; i++) {
                 AF[i].addTransition(AF[i], AI, "ε");
                 AF[i].addTransition(AF[i], estadoFinal, "ε");
             }
@@ -140,55 +155,150 @@ namespace Proyecto1_201602503.AFD_N
         }
 
         public AFND afnd_Punto(AFND A1, AFND A2) {
-            Console.WriteLine("Aqui estoy");
-            // Se crea un contador para mantener el orden
-            int contador = 0;
-            // Se crea el nuevo automata
-            AFND automataNuevo = new AFND();
-            // Se crea el nuevo estado inicial para el nuevo automata
-            Estado estadoInicial1 = new Estado();
-            estadoInicial1 = A1.getEstadoInicial();
-            estadoInicial1.setIndice(0);
-            // Se asigna el estado al nuevo automata
-            automataNuevo.setEstadoInicial(estadoInicial1);
-            automataNuevo.setEstados(estadoInicial1);
-            // Agregamos cada uno de los estados que contiene el automata hijo 1 al nuevo
-            for (int i = 0; i < A1.getEstados().Count; i++)
-            {
-                if (A1.getEstados()[i] != A1.getEstadoInicial()) 
-                {
-                    contador = i;
-                    Estado nuevoEstado = new Estado();
-                    nuevoEstado = A1.getEstados()[i];
-                    nuevoEstado.setIndice(i);
-                    automataNuevo.setEstados(nuevoEstado);
-                }
-            }
-            // Se obtiene el segundo estado inicial
-            contador++;
-            Estado estadoInicial2 = new Estado();
-            estadoInicial2 = A2.getEstadoInicial();
-            estadoInicial2.setIndice(contador);
-            // Se asigna la transicion entre A1 Y A2 
-            automataNuevo.getEstados()[automataNuevo.getEstados().Count - 1].addTransition(automataNuevo.getEstados()[automataNuevo.getEstados().Count - 1], estadoInicial2, "ε");
 
-            // Agregamos cada uno de los estados que contiene el automata hijo 2 al nuevo
-            for (int i = 0; i < A2.getEstados().Count; i++)
+            // Se crea un nuevo estado
+            AFND automataNuevo = new AFND();
+            int i = 0;
+            // Se asignan los estados del hijo 1 al nuevo automata
+            for (i = 0; i < A1.getEstados().Count; i++)
             {
-                if (A2.getEstados()[i] != A2.getEstadoInicial())
+                Estado tmp = new Estado();
+                tmp = A1.getEstados()[i];
+                tmp.setIndice(i);
+                if (i == 0)
                 {
-                    Estado nuevoEstado = new Estado();
-                    nuevoEstado = A2.getEstados()[i];
-                    nuevoEstado.setIndice(contador + i);
-                    automataNuevo.setEstados(nuevoEstado);
+                    automataNuevo.setEstadoInicial(tmp);
                 }
+                if (i == A1.getEstados().Count - 1)
+                {
+                //Se asignan las transiciones para los estados de aceptacion del hijo1
+                    for (int k = 0; k < A1.getEstadosAceptacion().Count; k++)
+                    {
+                        tmp.addTransition(A1.getEstadosAceptacion()[k], A2.getEstadoInicial(), "ε");
+                    }
+                }
+                automataNuevo.setEstados(tmp);
+
             }
-            // Se asigna el estado final para el nuevo automata creado
-            automataNuevo.setEstadosAceptacion(automataNuevo.getEstados()[automataNuevo.getEstados().Count - 1]);
+            // Se asignan los estados del segundo hijo
+            for (int j = 0; j < A2.getEstados().Count; j++)
+            {
+                Estado tmp = new Estado();
+                tmp = A2.getEstados()[j];
+                tmp.setIndice(i);
+
+            // Se asigna el ultimo estado como el de aceptacion para el nuevo automata
+                if (A2.getEstados().Count - 1 == j)
+                    automataNuevo.setEstadosAceptacion(tmp);
+                automataNuevo.setEstados(tmp);
+                i++;
+            }
             // Se devuelve el automata
             return automataNuevo;
 
         }
+
+        public AFND afnd_Suma(AFND automataHijo) {
+
+            // Se crea un nuevo automata
+            AFND automataNuevo = new AFND();
+            //Se crea el nuevo estado inicial
+            Estado estadoInicial = new Estado();
+            estadoInicial.setIndice(0);
+            //Se agrega el estado creado al automata nuevo
+            automataNuevo.setEstadoInicial(estadoInicial);
+            automataNuevo.setEstados(estadoInicial);
+            // Agregamos cada uno de los estados que contiene el automata hijo al nuevo
+            for (int i = 0; i < automataHijo.getEstados().Count; i++)
+            {
+
+                Estado nuevoEstado = new Estado();
+                nuevoEstado = automataHijo.getEstados()[i];
+                nuevoEstado.setIndice(i + 1);
+                automataNuevo.setEstados(nuevoEstado);
+
+            }
+            // Se crea el estado final y se asigna como estado de aceptacion
+            Estado estadoFinal = new Estado();
+            estadoFinal.setIndice(automataHijo.getEstados().Count + 1);
+            automataNuevo.setEstados(estadoFinal);
+            automataNuevo.setEstadosAceptacion(estadoFinal);
+            // Se asigna un nuevo estado para obtener el estado inicial del hijo
+            Estado AI = new Estado();
+            AI = automataHijo.getEstadoInicial();
+            List<Estado> AF = automataHijo.getEstadosAceptacion();
+            // Se agrega la transicion del estado inicial al estado inicial del hijo
+            estadoInicial.addTransition(estadoInicial, automataHijo.getEstadoInicial(), "ε");
+            // Se agregan todas las transiciones con epsilon del hijo 
+            for (int i = 0; i < AF.Count; i++)
+            {
+                AF[i].addTransition(AF[i], AI, "ε");
+                AF[i].addTransition(AF[i], estadoFinal, "ε");
+            }
+            // Se devuelve el automata creado
+            return automataNuevo;
+
+        }
+
+        public AFND afnd_Or(AFND A1, AFND A2){
+
+            // Se crea un contador para llevar el orden de todos los estados a crear para el nuevo automata
+            int cont = 0;
+            // Se crea un nuevo automata
+            AFND automataNuevo = new AFND();
+            //Se crea el nuevo estado inicial
+            Estado estadoInicial = new Estado();
+            estadoInicial.setIndice(0);
+            // Se crea la primera transicion del inicio hacia el inicio del hijo 1
+            estadoInicial.addTransition(estadoInicial, A1.getEstadoInicial(), "ε");
+            // Se agrega el primer estado al automata y se designa como inicial
+            automataNuevo.setEstados(estadoInicial);
+            automataNuevo.setEstadoInicial(estadoInicial);
+            // Se agregan los estados del hijo 2
+            for (cont = 0; cont < A2.getEstados().Count; cont ++) {
+                Estado nuevoEstado = new Estado();
+                nuevoEstado = A2.getEstados()[cont];
+                nuevoEstado.setIndice(cont + 1);
+                automataNuevo.setEstados(nuevoEstado);
+            }
+            // Se agregan los estados del hijo 1
+            for (int i = 0; i < A1.getEstados().Count; i ++)
+            {
+                Estado nuevoEstado = new Estado();
+                nuevoEstado = A1.getEstados()[i];
+                nuevoEstado.setIndice(cont + 1);
+                automataNuevo.setEstados(nuevoEstado);
+                cont++;
+            }
+            // Se crea el estado final para el nuevo automata
+            Estado estadoFinal = new Estado();
+            estadoFinal.setIndice(A1.getEstados().Count + A2.getEstados().Count + 1); // Se le asigna el indice del total de estados de los dos hijos mas uno
+            // Se agrega el estado a el nuevo automata y se designa como el de aceptacion
+            automataNuevo.setEstados(estadoFinal);
+            automataNuevo.setEstadosAceptacion(estadoFinal);
+            // Se asigna un nuevo estado con el valor del estado inicial del hijo 2
+            Estado AI = new Estado();
+            AI = A2.getEstadoInicial();
+            // Asignamos dos listas con los estados de aceptacion de cada hijo
+            List<Estado> AF1 = new List<Estado>();
+            AF1 = A2.getEstadosAceptacion();
+            List<Estado> AF2 = new List<Estado>();
+            AF2 = A1.getEstadosAceptacion();
+            // Se hace la conexion del estado inicial al segundo hijo
+            estadoInicial.addTransition(estadoInicial, AI, "ε");
+            // Se agregan las transiciones del inicio del segundo hijo al estado final y tambien del primero
+            for (int m = 0; m < AF1.Count; m ++) {
+                AF1[m].addTransition(AF1[m], estadoFinal, "ε");
+            }
+            for (int n = 0; n < AF1.Count; n ++) {
+                AF2[n].addTransition(AF2[n], estadoFinal, "ε");
+            }
+            // Se retorna el automata nuevo
+            return automataNuevo;
+
+        }
+
+        //Metodos para graficar
         public void recorrerAFND(AFND raiz)
         {
             if (raiz != null)
@@ -211,7 +321,7 @@ namespace Proyecto1_201602503.AFD_N
                 }
             }
         }
-
+        
         private void generarDot(String rdot, String rpng)
         {
             try
