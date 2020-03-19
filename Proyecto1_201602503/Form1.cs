@@ -58,7 +58,7 @@ namespace Proyecto1_201602503
         private void btnsiguiente_Click(object sender, EventArgs e)
         {
             contador_img++;
-            if (contador_img < totalImagen)
+            if (contador_img < totalImagen + 1)
             {
 
                 img = "A" + contador_img + ".png";
@@ -101,7 +101,7 @@ namespace Proyecto1_201602503
         private void button2_Click(object sender, EventArgs e)
         {
             contador_img1++;
-            if (contador_img1 < totalImagen)
+            if (contador_img1 < totalImagen + 1)
             {
 
                 img1 = "A" + contador_img1 + ".png";
