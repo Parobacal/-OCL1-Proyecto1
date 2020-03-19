@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections;
 using Proyecto1_201602503.Estructuras;
+using Proyecto1_201602503.AFD_N;
 
 
 namespace Proyecto1_201602503
@@ -209,6 +210,12 @@ namespace Proyecto1_201602503
                 }
                 Console.WriteLine();
             } */
+
+            Thompson t1 = new Thompson();
+            t1.Raiz = t1.Insertar("a");
+            t1.graficarAFND("prueba");
+            
+
         }
 
         private void button1_Click(object sender, EventArgs e)

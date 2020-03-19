@@ -17,7 +17,7 @@ namespace Proyecto1_201602503
         private int fila, columna; // Contadores para poder identificar la fila y la columna
         private ArrayList arrayLexemas, arrayToken, arrayFila, arrayColumna, arrayError, arrayFilaError, arrayColumnaError, arrayExp, arrayLex, arrayConj; // Arreglos para guardar toda la lista de simbolos
         private Lista_Simple listaConjuntos, listaLexemas, listaExpresiones; // Listas para guardar los valores que nos dan en el archivo de entrada
-
+       
         // ---------------Constructor de la clase automata---------------
         public Automata(){  
             // Solamente se inicializan estos arreglos y listas una vez que se inicia la ejecucion del programa
@@ -618,7 +618,7 @@ namespace Proyecto1_201602503
                 // Asignamos los lexemas:
                 nombre = "";
                 elementos = new ArrayList();
-                string lex = "";
+                //string lex = "";
                 int estado = 0;
                 for (int i = 0; i < lexema.Length; i++)
                 {
@@ -677,7 +677,6 @@ namespace Proyecto1_201602503
             return arrayColumna;
         }
 
-
         public ArrayList getArrayConj()
         {
             return arrayConj;
@@ -691,7 +690,6 @@ namespace Proyecto1_201602503
             return arrayLex;
         }
 
-
         public Lista_Simple getListaConjuntos()
         {
             return listaConjuntos;
@@ -704,6 +702,7 @@ namespace Proyecto1_201602503
         {
             return listaLexemas;
         }
+
 
         // Metodos para los reportes
         public void reporteHtml() {
