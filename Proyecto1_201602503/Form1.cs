@@ -56,7 +56,7 @@ namespace Proyecto1_201602503
         private void btnsiguiente_Click(object sender, EventArgs e)
         {
             contador_img++;
-            if (contador_img < 2)
+            if (contador_img < 3)
             {
 
                 img = "A" + contador_img + ".png";
@@ -212,8 +212,12 @@ namespace Proyecto1_201602503
             } */
 
             Thompson t1 = new Thompson();
-            t1.Raiz = t1.Insertar("a");
-            t1.graficarAFND("prueba");
+            t1.ER.Add(".");
+            t1.ER.Add("a");
+            t1.ER.Add("*");
+            t1.ER.Add("b");
+            t1.Raiz = t1.Insertar();
+            t1.graficarAFND("A2");
             
 
         }

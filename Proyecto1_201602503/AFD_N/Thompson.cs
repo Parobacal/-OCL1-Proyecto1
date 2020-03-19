@@ -27,10 +27,12 @@ namespace Proyecto1_201602503.AFD_N
             this.cadena = "";
             this.grafo = null;
             this.ER = new ArrayList();
+            Console.WriteLine(Contador + "estoy en el constructor");
         }
 
         public AFND Insertar()
         {
+            Console.WriteLine(Contador + "estoy en el metodo");
             if (ER[Contador].Equals("*"))
             {
                 AFND automataPadre = new AFND();
@@ -41,9 +43,12 @@ namespace Proyecto1_201602503.AFD_N
             }
             else if (ER[Contador].Equals("."))
             {
+                AFND automataPadre = new AFND();
                 Contador++;
-                AFND Automata = new AFND();
-                return Automata;
+                AFND automataHijo1 = Insertar();
+                AFND automataHijo2 = Insertar();
+                automataPadre = afnd_Punto(automataHijo1, automataHijo2);
+                return automataPadre;
             }
             else if (ER[Contador].Equals("+"))
             {
@@ -94,6 +99,7 @@ namespace Proyecto1_201602503.AFD_N
         }
 
         public AFND afnd_Kleene(AFND automataHijo){
+
             // Se crea un nuevo automata
             AFND automataNuevo = new AFND();
             //Se crea el nuevo estado inicial
@@ -128,11 +134,61 @@ namespace Proyecto1_201602503.AFD_N
                 AF[i].addTransition(AF[i], AI, "ε");
                 AF[i].addTransition(AF[i], estadoFinal, "ε");
             }
-
             // Se devuelve el automata creado
             return automataNuevo;
+
         }
 
+        public AFND afnd_Punto(AFND A1, AFND A2) {
+            Console.WriteLine("Aqui estoy");
+            // Se crea un contador para mantener el orden
+            int contador = 0;
+            // Se crea el nuevo automata
+            AFND automataNuevo = new AFND();
+            // Se crea el nuevo estado inicial para el nuevo automata
+            Estado estadoInicial1 = new Estado();
+            estadoInicial1 = A1.getEstadoInicial();
+            estadoInicial1.setIndice(0);
+            // Se asigna el estado al nuevo automata
+            automataNuevo.setEstadoInicial(estadoInicial1);
+            automataNuevo.setEstados(estadoInicial1);
+            // Agregamos cada uno de los estados que contiene el automata hijo 1 al nuevo
+            for (int i = 0; i < A1.getEstados().Count; i++)
+            {
+                if (A1.getEstados()[i] != A1.getEstadoInicial()) 
+                {
+                    contador = i;
+                    Estado nuevoEstado = new Estado();
+                    nuevoEstado = A1.getEstados()[i];
+                    nuevoEstado.setIndice(i);
+                    automataNuevo.setEstados(nuevoEstado);
+                }
+            }
+            // Se obtiene el segundo estado inicial
+            contador++;
+            Estado estadoInicial2 = new Estado();
+            estadoInicial2 = A2.getEstadoInicial();
+            estadoInicial2.setIndice(contador);
+            // Se asigna la transicion entre A1 Y A2 
+            automataNuevo.getEstados()[automataNuevo.getEstados().Count - 1].addTransition(automataNuevo.getEstados()[automataNuevo.getEstados().Count - 1], estadoInicial2, "ε");
+
+            // Agregamos cada uno de los estados que contiene el automata hijo 2 al nuevo
+            for (int i = 0; i < A2.getEstados().Count; i++)
+            {
+                if (A2.getEstados()[i] != A2.getEstadoInicial())
+                {
+                    Estado nuevoEstado = new Estado();
+                    nuevoEstado = A2.getEstados()[i];
+                    nuevoEstado.setIndice(contador + i);
+                    automataNuevo.setEstados(nuevoEstado);
+                }
+            }
+            // Se asigna el estado final para el nuevo automata creado
+            automataNuevo.setEstadosAceptacion(automataNuevo.getEstados()[automataNuevo.getEstados().Count - 1]);
+            // Se devuelve el automata
+            return automataNuevo;
+
+        }
         public void recorrerAFND(AFND raiz)
         {
             if (raiz != null)
@@ -180,7 +236,7 @@ namespace Proyecto1_201602503.AFD_N
             recorrerAFND(Raiz);
             //Console.WriteLine(ruta);
             grafo = new StringBuilder();
-            String rdot = ruta + "\\Automatas\\" + nombre_archivo + ".dot";
+            String rdot = ruta + "\\Dots\\" + nombre_archivo + ".dot";
             String rpng = ruta + "\\Automatas\\" + nombre_archivo + ".png";
             grafo.Append("digraph G { \n");
             grafo.Append("rankdir=LR; \n");

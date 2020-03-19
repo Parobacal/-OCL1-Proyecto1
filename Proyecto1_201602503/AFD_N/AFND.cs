@@ -13,7 +13,7 @@ namespace Proyecto1_201602503.AFD_N
         private Estado Estado_Inicial; //Estado inicial del automata
         private List<Estado> Estados;
         private List<Estado> Estados_Aceptacion;
-        public AFND C1,C2; // Tipo de automatas a determinar en la recursividad
+        //public AFND C1, C2; // Tipo de automatas a determinar en la recursividad
         
 
         //---------------------Constructor de la clase
@@ -22,8 +22,8 @@ namespace Proyecto1_201602503.AFD_N
             this.Estado_Inicial = null;
             this.Estados = new List<Estado>();
             this.Estados_Aceptacion = new List<Estado>();
-            this.C1 = new AFND();
-            this.C2 = new AFND();
+            //this.C1 = new AFND();
+            //this.C2 = new AFND();
 
         }
 
