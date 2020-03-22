@@ -14,9 +14,9 @@ namespace Proyecto1_201602503.AFD_N
         //----------------------------Atributos de la clase 
         public AFND Raiz; // AFND Principal
         private int Contador;
-        private StringBuilder grafo;
-        private String ruta;
-        private String cadena;
+        private StringBuilder grafo, grafo1;
+        private String ruta, ruta1;
+        private String cadena, cadena1;
         public ArrayList ER; // Lista que contendra los caracteres
         private ArrayList Terminales, Momentaneos; // Lista que guarda todos los simbolos terminales
         private List<Conjunto> ListaConjuntos; // Lista que guarda todos los conjuntos de las clausuras
@@ -32,8 +32,11 @@ namespace Proyecto1_201602503.AFD_N
             this.Raiz = null;
             this.Contador = 0;
             this.ruta = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            this.ruta1 = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             this.cadena = "";
+            this.cadena1 = "";
             this.grafo = null;
+            this.grafo1 = null;
             this.ER = new ArrayList();
             this.Terminales = new ArrayList();
             this.Momentaneos = new ArrayList();
@@ -362,7 +365,7 @@ namespace Proyecto1_201602503.AFD_N
             
         }
 
-        public void generarAFD() {
+        public void generarAFD(string nombre) {
 
             Conjunto primerConjunto = new Conjunto();
             obtenerConjunto(Raiz.getEstadoInicial(), primerConjunto, "ε");
@@ -370,7 +373,9 @@ namespace Proyecto1_201602503.AFD_N
             ListaConjuntos.Add(primerConjunto);
             obtenerTrayecto();
             Console.WriteLine(ListaTrayecto);
-                    
+            ArrayList States = new ArrayList();
+            obtenerEstados(States);
+            graficarTablaEstados(nombre, States);                 
         }
 
         public void obtenerTrayecto() {
@@ -478,6 +483,35 @@ namespace Proyecto1_201602503.AFD_N
             return nuevoSub;
         }
 
+        public void obtenerEstados(ArrayList states) {
+            for (int i = 0; i < ListaTrayecto.Count; i ++) {
+                bool existe = false;
+                if (states.Count == 0)
+                {
+                    states.Add(ListaTrayecto[i].getEstadoOrigen());
+                }
+                else
+                {
+
+                    for (int x = 0; x < states.Count; x++)
+                    {
+                        if (states[x].Equals(ListaTrayecto[i].getEstadoOrigen()))
+                        {
+                            
+                            existe = true;
+
+                        }
+                    }
+                    if (existe == false)
+                    {
+                        Console.WriteLine(ListaTrayecto[i].getEstadoOrigen());
+                        states.Add(ListaTrayecto[i].getEstadoOrigen());
+                    }
+                }
+            }
+
+        }
+
         //Metodos para graficar
         public void recorrerAFND(AFND raiz)
         {
@@ -507,7 +541,7 @@ namespace Proyecto1_201602503.AFD_N
             try
             {
                 System.IO.File.WriteAllText(rdot, grafo.ToString());
-                Console.WriteLine(grafo.ToString());
+                //Console.WriteLine(grafo.ToString());
                 String commandDot = "dot -Tpng " + "\"" + rdot + "\"" + " -o " + "\"" + rpng + "\"";
                 var comando = string.Format(commandDot);
                 var procStart = new System.Diagnostics.ProcessStartInfo("cmd", "/C " + comando);               
@@ -517,6 +551,26 @@ namespace Proyecto1_201602503.AFD_N
                 proc.WaitForExit();
             }
             catch (Exception ex) {
+                Console.WriteLine("Error" + ex);
+            }
+        }
+
+        private void generarDot1(String rdot, String rpng)
+        {
+            try
+            {
+                System.IO.File.WriteAllText(rdot, grafo1.ToString());
+                Console.WriteLine(grafo1.ToString());
+                String commandDot = "dot -Tpng " + "\"" + rdot + "\"" + " -o " + "\"" + rpng + "\"";
+                var comando = string.Format(commandDot);
+                var procStart = new System.Diagnostics.ProcessStartInfo("cmd", "/C " + comando);
+                var proc = new System.Diagnostics.Process();
+                proc.StartInfo = procStart;
+                proc.Start();
+                proc.WaitForExit();
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine("Error" + ex);
             }
         }
@@ -535,6 +589,85 @@ namespace Proyecto1_201602503.AFD_N
             this.generarDot(rdot, rpng);
             cadena = "";
         }
+
+        public void graficarTablaEstados(string nombre_archivo, ArrayList states)
+        {
+
+            recorrerTablaEstados(states);
+            
+            grafo1 = new StringBuilder();
+            String rdot = ruta1 + "\\Dots\\" + nombre_archivo + ".dot";
+            String rpng = ruta1 + "\\Tablas_estados\\" + nombre_archivo + ".png";
+            grafo1.Append("digraph G { \n");
+            grafo1.Append("tbl [ \n");
+            grafo1.Append("shape=plaintext \n");
+            grafo1.Append("label=< \n \n");
+            grafo1.Append("<table border='0' cellborder='1' color='black' cellspacing='0'> \n");
+            string texto = "";
+            texto += "<tr><td>Estados</td>";
+            for (int i = 0; i < Terminales.Count; i ++) {
+                texto += "<td>" + Terminales[i].ToString() +  "</td>";
+            }
+            texto += "</tr> \n";
+            grafo1.Append(texto);
+            texto = "";
+            grafo1.Append("<tr><td> \n");
+            grafo1.Append("<table color='black' border='0' cellborder='1' cellpadding='10' cellspacing='0'> \n");
+            for (int i = 0; i < states.Count; i ++) {
+                texto += "<tr><td>" + states[i] + "</td></tr>\n";
+            }
+            grafo1.Append(texto);
+            texto = "";
+            grafo1.Append("</table> \n");
+            grafo1.Append("</td> \n");
+            grafo1.Append("<td colspan='2' rowspan='2'> \n");
+            grafo1.Append("<table color='black' border='0' cellborder='1' cellpadding='10' cellspacing='0'> \n");
+            grafo1.Append(cadena1);
+            cadena1 = "";
+            grafo1.Append("</table> \n");
+            grafo1.Append("</td> \n");
+            grafo1.Append("</tr> \n");
+            grafo1.Append("</table> \n");
+            grafo1.Append(">]; \n");
+            grafo1.Append("} \n");
+            this.generarDot1(rdot, rpng);
+        }
+
+        public void recorrerTablaEstados(ArrayList states) 
+        {
+            bool coincidencia = false;
+            // Para cada estado
+            for (int i = 0; i < states.Count; i ++) 
+            {
+                
+                cadena1 += "<tr>";
+                // Para cada simbolo
+                for (int j = 0; j < Terminales.Count; j ++) 
+                {
+                    coincidencia = false;
+                    // Para cada trayectoria
+                    for (int k = 0; k < ListaTrayecto.Count; k ++) 
+                    {
+                        // Si hay una coincidencia
+                        if ((ListaTrayecto[k].getEstadoOrigen().Equals(states[i])) && (ListaTrayecto[k].getSimbolo().Equals(Terminales[j]))) 
+                        {
+                            coincidencia = true;
+                            cadena1 += "<td>" + ListaTrayecto[k].getEstadoFinal() + "</td>";                       
+                        }                                      
+                    }
+                    if (coincidencia.Equals(false)) {
+                        cadena1 += "<td>-</td>";
+                    }                                         
+                }
+                cadena1 += "</tr>\n";
+            }
+            
+        }
+
+
+
+
+
 
 
 
