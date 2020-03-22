@@ -232,7 +232,8 @@ namespace Proyecto1_201602503
 
             for (int i = 0; i < listaThompshon.Count; i ++) {
                     //Console.Write(listaThompshon[i].ER[j]);
-                    listaThompshon[i].graficarAFND("A" + i); 
+                listaThompshon[i].graficarAFND("A" + i);
+                listaThompshon[i].generarAFD();
                 
                 //Console.WriteLine();
 

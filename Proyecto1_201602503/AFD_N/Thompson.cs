@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Collections;
+using Proyecto1_201602503.AFD;
 
 namespace Proyecto1_201602503.AFD_N
 {
@@ -17,6 +18,13 @@ namespace Proyecto1_201602503.AFD_N
         private String ruta;
         private String cadena;
         public ArrayList ER; // Lista que contendra los caracteres
+        private ArrayList Terminales, Momentaneos; // Lista que guarda todos los simbolos terminales
+        private List<Conjunto> ListaConjuntos; // Lista que guarda todos los conjuntos de las clausuras
+        private List<Conjunto> ListaSubConjuntos; // Lista que guarda los subonjuntos formados
+        private List<Trayecto> ListaTrayecto; // Lista que guarda todos los ir a 
+
+       // public Conjunto nuevoConjunto;
+
 
         //----------------------------Constructor de la clase
         public Thompson()
@@ -27,13 +35,19 @@ namespace Proyecto1_201602503.AFD_N
             this.cadena = "";
             this.grafo = null;
             this.ER = new ArrayList();
+            this.Terminales = new ArrayList();
+            this.Momentaneos = new ArrayList();
+            this.ListaConjuntos = new List<Conjunto>();
+            this.ListaSubConjuntos = new List<Conjunto>();
+            this.ListaTrayecto = new List<Trayecto>();
+           // this.nuevoConjunto = new Conjunto();
 
         }
 
         //----------------------------Metodos de la clase
         public AFND Insertar()
         {
-            Console.WriteLine(ER[Contador]);
+            //Console.WriteLine(ER[Contador]);
             if (ER[Contador].Equals('*'))
             {
                 AFND automataPadre = new AFND();
@@ -44,7 +58,7 @@ namespace Proyecto1_201602503.AFD_N
             }
             else if (ER[Contador].Equals('.'))
             {
-                Console.WriteLine("LLEGUE AL PUNTO");
+                //Console.WriteLine("LLEGUE AL PUNTO");
                 AFND automataPadre = new AFND();
                 Contador++;
                 AFND automataHijo1 = Insertar();
@@ -81,7 +95,29 @@ namespace Proyecto1_201602503.AFD_N
             }
             else
             {
-                Console.WriteLine("LLEGUE Afuera");
+                bool existe = false;
+                if (Terminales.Count == 0) 
+                {
+                    Terminales.Add(ER[Contador]);
+                }
+                else 
+                {
+                    
+                    for (int x = 0; x < Terminales.Count; x ++ ) 
+                    {
+                        if (Terminales[x].Equals(ER[Contador].ToString()))
+                        {
+                            Console.WriteLine("BOOL");
+                            existe = true;
+                            
+                        }                     
+                    }
+                    if (existe == false) 
+                    {
+                        Terminales.Add(ER[Contador]);
+                    }
+                }
+                              
                 AFND Automata = new AFND();
                 Automata = afnd_Simbolo(ER[Contador].ToString());
                 Contador++;
@@ -296,6 +332,150 @@ namespace Proyecto1_201602503.AFD_N
             // Se retorna el automata nuevo
             return automataNuevo;
 
+        }
+
+
+
+        public void obtenerConjunto(Estado State, Conjunto nuevoConjunto, string simbolo) 
+        {
+            if (State.getTransiciones().Any()) {
+                if (simbolo.Equals("ε")) {
+                    if ((!nuevoConjunto.getEstados().Any())) {
+
+                        nuevoConjunto.setEstado(State.getTransiciones()[0].getEstadoInicial());
+
+                    }
+                }
+                for (int i = 0; i < State.getTransiciones().Count; i++)
+                {
+                    if (State.getTransiciones()[i].getSimbolo().Equals(simbolo))
+                    {
+
+                        Estado nuevoState = State.getTransiciones()[i].getEstadoFinal();
+                        nuevoConjunto.setEstado(State.getTransiciones()[i].getEstadoFinal());
+                        obtenerConjunto(nuevoState, nuevoConjunto, simbolo);
+
+                    }
+
+                }
+            }
+            
+        }
+
+        public void generarAFD() {
+
+            Conjunto primerConjunto = new Conjunto();
+            obtenerConjunto(Raiz.getEstadoInicial(), primerConjunto, "ε");
+            primerConjunto.setIndice(0);
+            ListaConjuntos.Add(primerConjunto);
+            obtenerTrayecto();
+            Console.WriteLine(ListaTrayecto);
+                    
+        }
+
+        public void obtenerTrayecto() {
+            int contador = 0;
+            for (int m = 0; m < ListaConjuntos.Count; m ++) 
+            {
+               // Console.WriteLine(ListaTrayecto);
+                //Console.WriteLine("SOY LA M " + m);
+                for (int i = 0; i < Terminales.Count; i++)
+                {
+                    Conjunto nuevoSubConjunto = new Conjunto();
+                    //Console.WriteLine("SOY LA I " + i);
+                    for (int j = 0; j < ListaConjuntos[m].getEstados().Count; j++)
+                    {
+                        //Console.WriteLine("SOY LA J " + j);
+                        obtenerConjunto(ListaConjuntos[m].getEstados()[j], nuevoSubConjunto, Terminales[i].ToString());                       
+                        
+                    }
+                    if (nuevoSubConjunto.getEstados().Any()) {
+                        if (subConjuntoExiste(nuevoSubConjunto).Equals(false))
+                        {
+                            contador++;
+                            Trayecto nuevoTrayecto = new Trayecto();
+                            nuevoTrayecto.setSimbolo(Terminales[i].ToString());
+                            nuevoTrayecto.setConjunto(nuevoSubConjunto);
+                            nuevoTrayecto.setEstadoOrigen(m);
+                            nuevoTrayecto.setEstadoFinal(contador);
+                            ListaTrayecto.Add(nuevoTrayecto);
+                            ListaSubConjuntos.Add(nuevoSubConjunto);
+
+                            Conjunto nuevoConjunto = new Conjunto();
+                            for (int y = 0; y < nuevoSubConjunto.getEstados().Count; y++) 
+                            {
+                                obtenerConjunto(nuevoSubConjunto.getEstados()[y], nuevoConjunto, "ε");
+                            }
+                            if (conjuntoExiste(nuevoConjunto).Equals(false)) {
+                                nuevoConjunto.setIndice(m + 1);
+                                ListaConjuntos.Add(nuevoConjunto);
+                            }
+                          
+                        }
+                        else
+                        {
+
+                            //Console.WriteLine("soy VERDADERO");
+                            Trayecto nuevoTrayecto = new Trayecto();
+                            nuevoTrayecto.setSimbolo(Terminales[i].ToString());
+                            nuevoTrayecto.setConjunto(nuevoSubConjunto);
+                            nuevoTrayecto.setEstadoOrigen(m);
+                            nuevoTrayecto.setEstadoFinal(obtenerSubConjuntoExiste(nuevoSubConjunto));
+                            ListaTrayecto.Add(nuevoTrayecto);
+                        }
+                    }
+
+
+                }
+            }
+        }
+
+        public bool conjuntoExiste(Conjunto conjunto_) {
+            bool existe = false;
+            for (int i = 0; i < ListaConjuntos.Count; i ++) {
+                //for (int j = 0; j < ListaConjuntos[i].getEstados().Count; j ++) {
+                    if (ListaConjuntos[i].getEstados().Equals(conjunto_.getEstados()))
+                    {
+                        existe = true;
+                        break;
+                    }
+                //}
+            }
+            return existe;
+        }
+
+        public bool subConjuntoExiste(Conjunto conjunto_)
+        {
+            bool existe = false;
+            for (int i = 0; i < ListaSubConjuntos.Count; i++)
+            {
+                //for (int j = 0; j < ListaConjuntos[i].getEstados().Count; j ++) {
+                var a = ListaSubConjuntos[i].getEstados().All(conjunto_.getEstados().Contains);
+                if (a.Equals(true))
+                {
+                    existe = true;
+                    break;
+                }
+                //}
+            }
+            return existe;
+        }
+
+        public int obtenerSubConjuntoExiste(Conjunto conjunto_)
+        {
+           int  nuevoSub = 0;
+            for (int i = 0; i < ListaTrayecto.Count; i++)
+            {
+                //for (int j = 0; j < ListaConjuntos[i].getEstados().Count; j ++) {
+                var a = ListaTrayecto[i].getConjunto().getEstados().All(conjunto_.getEstados().Contains);
+                if (a.Equals(true))
+                {
+                    nuevoSub = ListaTrayecto[i].getEstadoFinal();
+                    return nuevoSub;
+                }
+                //}
+            }
+            return nuevoSub;
         }
 
         //Metodos para graficar
