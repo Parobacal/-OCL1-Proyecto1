@@ -19,7 +19,8 @@ namespace Proyecto1_201602503
     {
         public int contador_img = 0;
         public int contador_img1 = 0;
-        public string img,img1;
+        public int contador_img2 = 0;
+        public string img,img1, img2;
         public int totalImagen = 0;
         private bool analisis = false;
         Automata automata = new Automata();
@@ -66,7 +67,7 @@ namespace Proyecto1_201602503
             else {
                 contador_img--;
             }
-            pictureBox1.Image = Image.FromFile(@"C:\Users\Pablo Barillas\Desktop\Automatas\" + img);
+            pictureBox1.Image = Image.FromFile(@"C:\Users\Pablo Barillas\Desktop\AFND\" + img);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
@@ -83,7 +84,7 @@ namespace Proyecto1_201602503
                 contador_img++;
                 img = "A" + contador_img + ".png";
             }
-            pictureBox1.Image = Image.FromFile(@"C:\Users\Pablo Barillas\Desktop\Automatas\" + img);
+            pictureBox1.Image = Image.FromFile(@"C:\Users\Pablo Barillas\Desktop\AFND\" + img);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
@@ -104,7 +105,7 @@ namespace Proyecto1_201602503
             if (contador_img1 < totalImagen + 1)
             {
 
-                img1 = "A" + contador_img1 + ".png";
+                img1 = "TE_" + contador_img1 + ".png";
             }
             else
             {
@@ -199,15 +200,48 @@ namespace Proyecto1_201602503
             contador_img1--;
             if (contador_img1 >= 0)
             {
-                img1 = "A" + contador_img1 + ".png";
+                img1 = "TE_" + contador_img1 + ".png";
             }
             else
             {
                 contador_img1++;
-                img1 = "A" + contador_img1 + ".png";
+                img1 = "TE_" + contador_img1 + ".png";
             }
             pictureBox2.Image = Image.FromFile(@"C:\Users\Pablo Barillas\Desktop\Tablas_estados\" + img1);
             pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            contador_img2++;
+            if (contador_img2 < totalImagen + 1)
+            {
+
+                img2 = "AFD" + contador_img2 + ".png";
+            }
+            else
+            {
+                contador_img2--;
+            }
+            pictureBox3.Image = Image.FromFile(@"C:\Users\Pablo Barillas\Desktop\AFD\" + img2);
+            pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            contador_img2--;
+            if (contador_img2 >= 0)
+            {
+                img2 = "AFD" + contador_img2 + ".png";
+            }
+            else
+            {
+                contador_img2++;
+                img2 = "AFD" + contador_img2 + ".png";
+            }
+            pictureBox3.Image = Image.FromFile(@"C:\Users\Pablo Barillas\Desktop\AFD\" + img2);
+            pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
+
         }
 
         private void generarThomphson() {

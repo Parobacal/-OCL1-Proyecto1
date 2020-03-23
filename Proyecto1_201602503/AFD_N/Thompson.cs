@@ -621,7 +621,7 @@ namespace Proyecto1_201602503.AFD_N
             //Console.WriteLine(ruta);
             grafo = new StringBuilder();
             String rdot = ruta + "\\Dots\\" + nombre_archivo + ".dot";
-            String rpng = ruta + "\\Automatas\\" + nombre_archivo + ".png";
+            String rpng = ruta + "\\AFND\\" + nombre_archivo + ".png";
             grafo.Append("digraph G { \n");
             grafo.Append("rankdir=LR; \n");
             grafo.Append(cadena);
