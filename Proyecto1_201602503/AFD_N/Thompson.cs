@@ -12,16 +12,17 @@ namespace Proyecto1_201602503.AFD_N
     class Thompson
     {
         //----------------------------Atributos de la clase 
-        public AFND Raiz; // AFND Principal
+        public AFND Raiz, AFD; // AFND Principal y AFD que se formara
         private int Contador;
-        private StringBuilder grafo, grafo1;
-        private String ruta, ruta1;
-        private String cadena, cadena1;
+        private StringBuilder grafo, grafo1, grafo2;
+        private String ruta, ruta1, ruta2;
+        private String cadena, cadena1, cadena2;
         public ArrayList ER; // Lista que contendra los caracteres
         private ArrayList Terminales, Momentaneos; // Lista que guarda todos los simbolos terminales
         private List<Conjunto> ListaConjuntos; // Lista que guarda todos los conjuntos de las clausuras
         private List<Conjunto> ListaSubConjuntos; // Lista que guarda los subonjuntos formados
         private List<Trayecto> ListaTrayecto; // Lista que guarda todos los ir a 
+        private bool Aceptacion;
 
        // public Conjunto nuevoConjunto;
 
@@ -30,13 +31,18 @@ namespace Proyecto1_201602503.AFD_N
         public Thompson()
         {
             this.Raiz = null;
+            this.Aceptacion = false;
+            this.AFD = null;
             this.Contador = 0;
             this.ruta = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             this.ruta1 = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            this.ruta2 = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             this.cadena = "";
             this.cadena1 = "";
+            this.cadena2 = "";
             this.grafo = null;
             this.grafo1 = null;
+            this.grafo2 = null;
             this.ER = new ArrayList();
             this.Terminales = new ArrayList();
             this.Momentaneos = new ArrayList();
@@ -341,9 +347,12 @@ namespace Proyecto1_201602503.AFD_N
 
         public void obtenerConjunto(Estado State, Conjunto nuevoConjunto, string simbolo) 
         {
-            if (State.getTransiciones().Any()) {
-                if (simbolo.Equals("ε")) {
-                    if ((!nuevoConjunto.getEstados().Any())) {
+            if (State.getTransiciones().Any())
+            {
+                if (simbolo.Equals("ε"))
+                {
+                    if ((!nuevoConjunto.getEstados().Any())) // esta mal porque solo toma en cuenta si viene una vez y esta vacio en cambio pueden ser dos veces y no estar vacio
+                    {
 
                         nuevoConjunto.setEstado(State.getTransiciones()[0].getEstadoInicial());
 
@@ -361,8 +370,7 @@ namespace Proyecto1_201602503.AFD_N
                     }
 
                 }
-            }
-            
+            }                     
         }
 
         public void generarAFD(string nombre) {
@@ -375,7 +383,8 @@ namespace Proyecto1_201602503.AFD_N
             Console.WriteLine(ListaTrayecto);
             ArrayList States = new ArrayList();
             obtenerEstados(States);
-            graficarTablaEstados(nombre, States);                 
+            graficarTablaEstados(nombre, States);
+            
         }
 
         public void obtenerTrayecto() {
@@ -383,14 +392,14 @@ namespace Proyecto1_201602503.AFD_N
             for (int m = 0; m < ListaConjuntos.Count; m ++) 
             {
                // Console.WriteLine(ListaTrayecto);
-                //Console.WriteLine("SOY LA M " + m);
+                Console.WriteLine("SOY LA M " + m);
                 for (int i = 0; i < Terminales.Count; i++)
                 {
                     Conjunto nuevoSubConjunto = new Conjunto();
-                    //Console.WriteLine("SOY LA I " + i);
+                    Console.WriteLine("SOY LA I " + i);
                     for (int j = 0; j < ListaConjuntos[m].getEstados().Count; j++)
                     {
-                        //Console.WriteLine("SOY LA J " + j);
+                        Console.WriteLine("SOY LA J " + j);
                         obtenerConjunto(ListaConjuntos[m].getEstados()[j], nuevoSubConjunto, Terminales[i].ToString());                       
                         
                     }
@@ -409,11 +418,21 @@ namespace Proyecto1_201602503.AFD_N
                             Conjunto nuevoConjunto = new Conjunto();
                             for (int y = 0; y < nuevoSubConjunto.getEstados().Count; y++) 
                             {
-                                obtenerConjunto(nuevoSubConjunto.getEstados()[y], nuevoConjunto, "ε");
+                                Conjunto Interno = new Conjunto();
+                                if (nuevoSubConjunto.getEstados()[y].getIndice().Equals(Raiz.getEstadosAceptacion()[0].getIndice())) {
+                                    nuevoConjunto.setEstado(nuevoSubConjunto.getEstados()[y]);
+                                }
+                                else {
+                                    obtenerConjunto(nuevoSubConjunto.getEstados()[y], Interno, "ε");
+                                }
+                                for (int u = 0; u < Interno.getEstados().Count; u ++) {
+                                    nuevoConjunto.setEstado(Interno.getEstados()[u]);
+                                }
                             }
                             if (conjuntoExiste(nuevoConjunto).Equals(false)) {
                                 nuevoConjunto.setIndice(m + 1);
                                 ListaConjuntos.Add(nuevoConjunto);
+                                Console.WriteLine(ListaConjuntos);
                             }
                           
                         }
@@ -439,11 +458,12 @@ namespace Proyecto1_201602503.AFD_N
             bool existe = false;
             for (int i = 0; i < ListaConjuntos.Count; i ++) {
                 //for (int j = 0; j < ListaConjuntos[i].getEstados().Count; j ++) {
-                    if (ListaConjuntos[i].getEstados().Equals(conjunto_.getEstados()))
-                    {
-                        existe = true;
-                        break;
-                    }
+                var a = ListaConjuntos[i].getEstados().All(conjunto_.getEstados().Contains) && ListaConjuntos[i].getEstados().Count == conjunto_.getEstados().Count;
+                if (a.Equals(true))
+                {
+                    existe = true;
+                    break;
+                }
                 //}
             }
             return existe;
@@ -455,7 +475,7 @@ namespace Proyecto1_201602503.AFD_N
             for (int i = 0; i < ListaSubConjuntos.Count; i++)
             {
                 //for (int j = 0; j < ListaConjuntos[i].getEstados().Count; j ++) {
-                var a = ListaSubConjuntos[i].getEstados().All(conjunto_.getEstados().Contains);
+                var a = ListaSubConjuntos[i].getEstados().All(conjunto_.getEstados().Contains) && ListaSubConjuntos[i].getEstados().Count == conjunto_.getEstados().Count;
                 if (a.Equals(true))
                 {
                     existe = true;
@@ -483,31 +503,9 @@ namespace Proyecto1_201602503.AFD_N
             return nuevoSub;
         }
 
-        public void obtenerEstados(ArrayList states) {
-            for (int i = 0; i < ListaTrayecto.Count; i ++) {
-                bool existe = false;
-                if (states.Count == 0)
-                {
-                    states.Add(ListaTrayecto[i].getEstadoOrigen());
-                }
-                else
-                {
-
-                    for (int x = 0; x < states.Count; x++)
-                    {
-                        if (states[x].Equals(ListaTrayecto[i].getEstadoOrigen()))
-                        {
-                            
-                            existe = true;
-
-                        }
-                    }
-                    if (existe == false)
-                    {
-                        Console.WriteLine(ListaTrayecto[i].getEstadoOrigen());
-                        states.Add(ListaTrayecto[i].getEstadoOrigen());
-                    }
-                }
+        public void obtenerEstados(ArrayList states) {           
+            for (int i = 0; i < ListaConjuntos.Count; i ++) {
+                states.Add(i);
             }
 
         }
@@ -535,7 +533,30 @@ namespace Proyecto1_201602503.AFD_N
                 }
             }
         }
-        
+
+        public void recorrerAFD(AFND raiz)
+        {
+            if (raiz != null)
+            {
+                for (int i = 0; i < raiz.getEstadosAceptacion().Count; i++)
+                {
+                    cadena2 += "node [shape = doublecircle]; " + "\"" + raiz.getEstadosAceptacion()[i].getIndice().ToString() + "\"" + "; \n";
+
+                }
+                cadena2 += "node [shape = circle]; \n";
+                for (int j = 0; j < raiz.getEstados().Count; j++)
+                {
+                    for (int i = 0; i < raiz.getEstados()[j].getTransiciones().Count; i++)
+                    {
+                        if (raiz.getEstados()[j].getTransiciones()[i] != null)
+                        {
+                            cadena2 += "\"" + raiz.getEstados()[j].getTransiciones()[i].getEstadoInicial().getIndice().ToString() + "\"" + " -> " + "\"" + raiz.getEstados()[j].getTransiciones()[i].getEstadoFinal().getIndice().ToString() + "\"" + "[ label = \"" + raiz.getEstados()[j].getTransiciones()[i].getSimbolo() + "\" ]; \n";
+                        }
+                    }
+                }
+            }
+        }
+
         private void generarDot(String rdot, String rpng)
         {
             try
@@ -575,6 +596,25 @@ namespace Proyecto1_201602503.AFD_N
             }
         }
 
+        private void generarDot2(String rdot, String rpng)
+        {
+            try
+            {
+                System.IO.File.WriteAllText(rdot, grafo2.ToString());
+                //Console.WriteLine(grafo.ToString());
+                String commandDot = "dot -Tpng " + "\"" + rdot + "\"" + " -o " + "\"" + rpng + "\"";
+                var comando = string.Format(commandDot);
+                var procStart = new System.Diagnostics.ProcessStartInfo("cmd", "/C " + comando);
+                var proc = new System.Diagnostics.Process();
+                proc.StartInfo = procStart;
+                proc.Start();
+                proc.WaitForExit();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error" + ex);
+            }
+        }
         public void graficarAFND(string nombre_archivo)
         {
             recorrerAFND(Raiz);
@@ -620,7 +660,7 @@ namespace Proyecto1_201602503.AFD_N
             texto = "";
             grafo1.Append("</table> \n");
             grafo1.Append("</td> \n");
-            grafo1.Append("<td colspan='2' rowspan='2'> \n");
+            grafo1.Append("<td colspan=\'" + Terminales.Count + "\' rowspan=\'" + Terminales.Count + "\'> \n");
             grafo1.Append("<table color='black' border='0' cellborder='1' cellpadding='10' cellspacing='0'> \n");
             grafo1.Append(cadena1);
             cadena1 = "";
@@ -633,13 +673,33 @@ namespace Proyecto1_201602503.AFD_N
             this.generarDot1(rdot, rpng);
         }
 
+        public void graficarAFD(string nombre_archivo)
+        {
+            recorrerAFD(AFD);
+            //Console.WriteLine(ruta);
+            grafo2 = new StringBuilder();
+            String rdot = ruta2 + "\\Dots\\" + nombre_archivo + ".dot";
+            String rpng = ruta2 + "\\AFD\\" + nombre_archivo + ".png";
+            grafo2.Append("digraph G { \n");
+            grafo2.Append("rankdir=LR; \n");
+            grafo2.Append(cadena2);
+            grafo2.Append("} \n");
+            this.generarDot2(rdot, rpng);
+            cadena2 = "";
+        }
+
         public void recorrerTablaEstados(ArrayList states) 
         {
+
+            AFND nuevoAFD = new AFND();
+            // Bool para ver si existe o no transicion con determinado simbolo
             bool coincidencia = false;
             // Para cada estado
             for (int i = 0; i < states.Count; i ++) 
             {
-                
+                // Se crea nuevo estado para el nuevo AFD
+                Estado nuevoEstado = new Estado();
+                nuevoEstado.setIndice((int)states[i]);
                 cadena1 += "<tr>";
                 // Para cada simbolo
                 for (int j = 0; j < Terminales.Count; j ++) 
@@ -649,9 +709,17 @@ namespace Proyecto1_201602503.AFD_N
                     for (int k = 0; k < ListaTrayecto.Count; k ++) 
                     {
                         // Si hay una coincidencia
-                        if ((ListaTrayecto[k].getEstadoOrigen().Equals(states[i])) && (ListaTrayecto[k].getSimbolo().Equals(Terminales[j]))) 
+                        if ((ListaTrayecto[k].getEstadoOrigen().Equals(states[i])) && (ListaTrayecto[k].getSimbolo().Equals(Terminales[j])))
                         {
                             coincidencia = true;
+                            // Se asigna indice al estado creado
+                            
+                            // Se crea estado final
+                            Estado nuevoEstadoFinal = new Estado();
+                            nuevoEstadoFinal.setIndice(ListaTrayecto[k].getEstadoFinal());
+                            // Se crea nueva transicion del nuevo estado creado
+                            nuevoEstado.addTransition(nuevoEstado, nuevoEstadoFinal, Terminales[j].ToString());
+
                             cadena1 += "<td>" + ListaTrayecto[k].getEstadoFinal() + "</td>";                       
                         }                                      
                     }
@@ -660,7 +728,41 @@ namespace Proyecto1_201602503.AFD_N
                     }                                         
                 }
                 cadena1 += "</tr>\n";
+
+                nuevoAFD.setEstados(nuevoEstado);
             }
+
+            // Se asigna estado inicial
+            for (int l = 0; l < nuevoAFD.getEstados().Count; l ++) 
+            {
+                if (nuevoAFD.getEstados()[l].getIndice().Equals(0)) 
+                {
+                    nuevoAFD.setEstadoInicial(nuevoAFD.getEstados()[l]);
+                }
+            }
+
+            // Se asigna estado final
+            for (int i = 0; i < ListaConjuntos.Count; i ++) 
+            {
+                Console.WriteLine("I = " + i);
+                for (int j = 0; j < ListaConjuntos[i].getEstados().Count; j ++) 
+                {
+                    Console.WriteLine("J = " + j);
+                    if (ListaConjuntos[i].getEstados()[j].getIndice().Equals(Raiz.getEstadosAceptacion()[0].getIndice())) 
+                    {
+                        for (int k = 0; k < nuevoAFD.getEstados().Count; k ++) 
+                        {
+                            Console.WriteLine("K = " + k);
+                            if (nuevoAFD.getEstados()[k].getIndice().Equals(i)) 
+                            {
+                                nuevoAFD.setEstadosAceptacion(nuevoAFD.getEstados()[k]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            AFD = nuevoAFD;
             
         }
 

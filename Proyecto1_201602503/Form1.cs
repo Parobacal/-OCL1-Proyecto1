@@ -234,6 +234,7 @@ namespace Proyecto1_201602503
                     //Console.Write(listaThompshon[i].ER[j]);
                 listaThompshon[i].graficarAFND("A" + i);
                 listaThompshon[i].generarAFD("TE_" + i);
+                listaThompshon[i].graficarAFD("AFD" + i);
                 
                 //Console.WriteLine();
 
