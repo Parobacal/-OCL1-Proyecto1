@@ -270,9 +270,7 @@ namespace Proyecto1_201602503
 
         private bool validarLexema(ArrayList Simbolos, Estado State, bool valido, AFND AFD) {
 
-            // Si el estado no es el de aceptacion
-
-            if (!AFD.getEstadosAceptacion()[0].getIndice().Equals(State.getIndice()))
+            if (contador_lexema == Simbolos.Count - 1)
             {
                 // Por cada transicion del estado
                 for (int i = 0; i < State.getTransiciones().Count; i++)
@@ -302,10 +300,19 @@ namespace Proyecto1_201602503
                                     {
                                         if (codigoASCII.Equals(10))
                                         {
-                                            valido = true;
-                                            contador_lexema++;
-                                            Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
-                                            return validarLexema(Simbolos, siguienteEstado, valido, AFD);
+                                            for (int x = 0; x < AFD.getEstadosAceptacion().Count; x++)
+                                            {
+                                                if (State.getTransiciones()[i].getEstadoFinal().getIndice().Equals(AFD.getEstadosAceptacion()[x].getIndice()))
+                                                {
+                                                    valido = true;
+                                                    contador_lexema = 0;
+                                                    return valido;
+                                                }
+                                            }
+
+                                            valido = false;
+                                            contador_lexema = 0;
+                                            return valido;
                                         }
                                         else
                                         {
@@ -319,10 +326,19 @@ namespace Proyecto1_201602503
                                     {
                                         if (codigoASCII.Equals(39))
                                         {
-                                            valido = true;
-                                            contador_lexema++;
-                                            Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
-                                            return validarLexema(Simbolos, siguienteEstado, valido, AFD);
+                                            for (int x = 0; x < AFD.getEstadosAceptacion().Count; x++)
+                                            {
+                                                if (State.getTransiciones()[i].getEstadoFinal().getIndice().Equals(AFD.getEstadosAceptacion()[x].getIndice()))
+                                                {
+                                                    valido = true;
+                                                    contador_lexema = 0;
+                                                    return valido;
+                                                }
+                                            }
+
+                                            valido = false;
+                                            contador_lexema = 0;
+                                            return valido;
                                         }
                                         else
                                         {
@@ -336,10 +352,19 @@ namespace Proyecto1_201602503
                                     {
                                         if (codigoASCII.Equals(34))
                                         {
-                                            valido = true;
-                                            contador_lexema++;
-                                            Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
-                                            return validarLexema(Simbolos, siguienteEstado, valido, AFD);
+                                            for (int x = 0; x < AFD.getEstadosAceptacion().Count; x++)
+                                            {
+                                                if (State.getTransiciones()[i].getEstadoFinal().getIndice().Equals(AFD.getEstadosAceptacion()[x].getIndice()))
+                                                {
+                                                    valido = true;
+                                                    contador_lexema = 0;
+                                                    return valido;
+                                                }
+                                            }
+
+                                            valido = false;
+                                            contador_lexema = 0;
+                                            return valido;
                                         }
                                         else
                                         {
@@ -353,10 +378,19 @@ namespace Proyecto1_201602503
                                     {
                                         if (codigoASCII.Equals(09))
                                         {
-                                            valido = true;
-                                            contador_lexema++;
-                                            Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
-                                            return validarLexema(Simbolos, siguienteEstado, valido, AFD);
+                                            for (int x = 0; x < AFD.getEstadosAceptacion().Count; x++)
+                                            {
+                                                if (State.getTransiciones()[i].getEstadoFinal().getIndice().Equals(AFD.getEstadosAceptacion()[x].getIndice()))
+                                                {
+                                                    valido = true;
+                                                    contador_lexema = 0;
+                                                    return valido;
+                                                }
+                                            }
+
+                                            valido = false;
+                                            contador_lexema = 0;
+                                            return valido;
                                         }
                                         else
                                         {
@@ -366,24 +400,25 @@ namespace Proyecto1_201602503
                                         }
                                     }
                                     // Si hay alguna coincidencia
-
                                     else if (Simbolos[contador_lexema].ToString().Equals(automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].ToString()))
                                     {
-                                        valido = true;
-                                        contador_lexema++;
-                                        Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
-                                        return validarLexema(Simbolos, siguienteEstado, valido, AFD);
+                                        for (int x = 0; x < AFD.getEstadosAceptacion().Count; x++)
+                                        {
+                                            if (State.getTransiciones()[i].getEstadoFinal().getIndice().Equals(AFD.getEstadosAceptacion()[x].getIndice()))
+                                            {
+                                                valido = true;
+                                                contador_lexema = 0;
+                                                return valido;
+                                            }
+                                        }
 
-                                        //return valido;
+                                        valido = false;
+                                        contador_lexema = 0;
+                                        return valido;
                                     }
                                 }
-                                // Si no coincidio con ningun elemento del conjunto
-                                valido = false;
-                                contador_lexema = 0;
-                                return valido;
                             }
                         }
-
                     }
                     // Si NO ES UN CONJUNTO
                     else
@@ -392,176 +427,156 @@ namespace Proyecto1_201602503
                         Console.WriteLine(Simbolos[contador_lexema] + " " + State.getTransiciones()[i].getSimbolo());
                         if (Simbolos[contador_lexema].ToString().Equals(State.getTransiciones()[i].getSimbolo()))
                         {
-                            valido = true;
-                            contador_lexema++;
-                            Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
-                            return validarLexema(Simbolos, siguienteEstado, valido, AFD);
-                        }
-                        // Si no coincide
-                        else
-                        {
+                            for (int x = 0; x < AFD.getEstadosAceptacion().Count; x ++)
+                            {
+                                if (State.getTransiciones()[i].getEstadoFinal().getIndice().Equals(AFD.getEstadosAceptacion()[x].getIndice()))
+                                {
+                                    valido = true;
+                                    contador_lexema = 0;
+                                    return valido;
+                                }
+                            }
+                            
                             valido = false;
                             contador_lexema = 0;
                             return valido;
                         }
                     }
-
                 }
-
+                valido = false;
+                //return valido;
             }
             else 
             {
-                // Si tiene transiciones en si mismo
                 if (State.getTransiciones().Any())
                 {
-                    if (!contador_lexema.Equals(Simbolos.Count))
-                    {
-                        // Por cada transicion del estado
-                        for (int i = 0; i < State.getTransiciones().Count; i++)
-                        {
-                            // SI HAY ALGUN CONJUNTO
-                            if (State.getTransiciones()[i].getSimbolo().Contains('{'))
-                            {
-                                string Conjunto = "";
-                                // Por cada conjunto
-                                for (int j = 0; j < automata.getListaConjuntos().getSize(); j++)
-                                {
-                                    // Se asigna el nombre con el que se comparara con el conjunto de la transicion
-                                    Conjunto = "{" + automata.getListaConjuntos().obtenerNodo(j).getNombre() + "}";
-                                    // Si los nombres coinciden
-                                    if (Conjunto.Equals(State.getTransiciones()[i].getSimbolo()))
-                                    {
-                                        Console.WriteLine("Entre");
-                                        // Se convierte el simbolo en codigo ascii
-                                        char Caracter = (char)Simbolos[contador_lexema];
-                                        int codigoASCII = Caracter;
-                                        // Por cada caracter valido dentro del conjunto
-                                        for (int k = 0; k < automata.getListaConjuntos().obtenerNodo(j).getElementos().Count; k++)
-                                        {
-                                            Console.WriteLine(Simbolos[contador_lexema].ToString());
-                                            // Si es un salto de linea
-                                            if (automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].Equals("\\" + "n"))
-                                            {
-                                                if (codigoASCII.Equals(10))
-                                                {
-                                                    valido = true;
-                                                    contador_lexema++;
-                                                    Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoInicial().getIndice()];
-                                                    return validarLexema(Simbolos, siguienteEstado, valido, AFD);
-                                                }
-                                                else
-                                                {
-                                                    valido = false;
-                                                    contador_lexema = 0;
-                                                    return valido;
-                                                }
-                                            }
-                                            // Si es una comilla simple
-                                            else if (automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].Equals("\\" + "'"))
-                                            {
-                                                if (codigoASCII.Equals(39))
-                                                {
-                                                    valido = true;
-                                                    contador_lexema++;
-                                                    Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoInicial().getIndice()];
-                                                    return validarLexema(Simbolos, siguienteEstado, valido, AFD);
-                                                }
-                                                else
-                                                {
-                                                    valido = false;
-                                                    contador_lexema = 0;
-                                                    return valido;
-                                                }
-                                            }
-                                            // Si es una comilla doble
-                                            else if (automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].Equals("\\" + "\""))
-                                            {
-                                                if (codigoASCII.Equals(34))
-                                                {
-                                                    valido = true;
-                                                    contador_lexema++;
-                                                    Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoInicial().getIndice()];
-                                                    return validarLexema(Simbolos, siguienteEstado, valido, AFD);
-                                                }
-                                                else
-                                                {
-                                                    valido = false;
-                                                    contador_lexema = 0;
-                                                    return valido;
-                                                }
-                                            }
-                                            // Si es una tabulacion
-                                            else if (automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].Equals("\\" + "t"))
-                                            {
-                                                if (codigoASCII.Equals(09))
-                                                {
-                                                    valido = true;
-                                                    contador_lexema++;
-                                                    Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoInicial().getIndice()];
-                                                    return validarLexema(Simbolos, siguienteEstado, valido, AFD);
-                                                }
-                                                else
-                                                {
-                                                    valido = false;
-                                                    contador_lexema = 0;
-                                                    return valido;
-                                                }
-                                            }
-                                            // Si hay alguna coincidencia
 
-                                            else if (Simbolos[contador_lexema].ToString().Equals(automata.getListaConjuntos().obtenerNodo(j).getElementos()[k]))
+                    // Por cada transicion del estado
+                    for (int i = 0; i < State.getTransiciones().Count; i++)
+                    {
+                        // SI HAY ALGUN CONJUNTO
+                        if (State.getTransiciones()[i].getSimbolo().Contains('{'))
+                        {
+                            string Conjunto = "";
+                            // Por cada conjunto
+                            for (int j = 0; j < automata.getListaConjuntos().getSize(); j++)
+                            {
+                                // Se asigna el nombre con el que se comparara con el conjunto de la transicion
+                                Conjunto = "{" + automata.getListaConjuntos().obtenerNodo(j).getNombre() + "}";
+                                // Si los nombres coinciden
+                                if (Conjunto.Equals(State.getTransiciones()[i].getSimbolo()))
+                                {
+                                    Console.WriteLine("Entre");
+                                    // Se convierte el simbolo en codigo ascii
+                                    char Caracter = (char)Simbolos[contador_lexema];
+                                    int codigoASCII = Caracter;
+                                    // Por cada caracter valido dentro del conjunto
+                                    for (int k = 0; k < automata.getListaConjuntos().obtenerNodo(j).getElementos().Count; k++)
+                                    {
+                                        Console.WriteLine(Simbolos[contador_lexema].ToString());
+                                        // Si es un salto de linea
+                                        if (automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].Equals("\\" + "n"))
+                                        {
+                                            if (codigoASCII.Equals(10))
                                             {
                                                 valido = true;
                                                 contador_lexema++;
-                                                Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoInicial().getIndice()];
+                                                Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
                                                 return validarLexema(Simbolos, siguienteEstado, valido, AFD);
-
-                                                //return valido;
+                                            }
+                                            else
+                                            {
+                                                valido = false;
+                                                contador_lexema = 0;
+                                                return valido;
                                             }
                                         }
-                                        // Si no coincidio con ningun elemento del conjunto
-                                        valido = false;
-                                        contador_lexema = 0;
-                                        return valido;
+                                        // Si es una comilla simple
+                                        else if (automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].Equals("\\" + "'"))
+                                        {
+                                            if (codigoASCII.Equals(39))
+                                            {
+                                                valido = true;
+
+                                                contador_lexema++;
+                                                Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
+                                                return validarLexema(Simbolos, siguienteEstado, valido, AFD);
+                                            }
+                                            else
+                                            {
+                                                valido = false;
+                                                contador_lexema = 0;
+                                                return valido;
+                                            }
+                                        }
+                                        // Si es una comilla doble
+                                        else if (automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].Equals("\\" + "\""))
+                                        {
+                                            if (codigoASCII.Equals(34))
+                                            {
+                                                valido = true;
+                                                contador_lexema++;
+                                                Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
+                                                return validarLexema(Simbolos, siguienteEstado, valido, AFD);
+                                            }
+                                            else
+                                            {
+                                                valido = false;
+                                                contador_lexema = 0;
+                                                return valido;
+                                            }
+                                        }
+                                        // Si es una tabulacion
+                                        else if (automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].Equals("\\" + "t"))
+                                        {
+                                            if (codigoASCII.Equals(09))
+                                            {
+                                                valido = true;
+                                                contador_lexema++;
+                                                Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
+                                                return validarLexema(Simbolos, siguienteEstado, valido, AFD);
+                                            }
+                                            else
+                                            {
+                                                valido = false;
+                                                contador_lexema = 0;
+                                                return valido;
+                                            }
+                                        }
+                                        // Si hay alguna coincidencia
+                                        else if (Simbolos[contador_lexema].ToString().Equals(automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].ToString()))
+                                        {
+                                            valido = true;
+                                            contador_lexema++;
+                                            Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
+                                            return validarLexema(Simbolos, siguienteEstado, valido, AFD);
+                                        }
                                     }
                                 }
-
                             }
-                            // Si NO ES UN CONJUNTO
-                            else
+                        }
+                        // Si NO ES UN CONJUNTO
+                        else
+                        {
+                            // Si el simbolo coincide
+                            //Console.WriteLine(Simbolos[contador_lexema] + " " + State.getTransiciones()[i].getSimbolo());
+                            if (Simbolos[contador_lexema].ToString().Equals(State.getTransiciones()[i].getSimbolo()))
                             {
-                                // Si el simbolo coincide
-                                if (Simbolos[contador_lexema].ToString().Equals(State.getTransiciones()[i].getSimbolo()))
-                                {
-                                    valido = true;
-                                    contador_lexema++;
-                                    Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoInicial().getIndice()];
-                                    return validarLexema(Simbolos, siguienteEstado, valido, AFD);
-                                }
-                                // Si no coincide
-                                else
-                                {
-                                    valido = false;
-                                    contador_lexema = 0;
-                                    return valido;
-                                }
+                                valido = true;
+                                contador_lexema++;
+                                Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
+                                return validarLexema(Simbolos, siguienteEstado, valido, AFD);
                             }
-
                         }
                     }
+                    valido = false;
+                    //return valido;
                 }
-                // Si no tiene transiciones en si mismo
-                else
+                else 
                 {
-                    // Si no tiene la cantidad permitida de simbolos
-                    if (Simbolos.Count > AFD.getEstados().Count - 1)
-                    {
-                        contador_lexema = 0;
-                        valido = false;
-                    }                       
+                    valido = false;
                 }
-            }
-            // Devuelve el resultado
+            }                      
             contador_lexema = 0;
             return valido;                 
         }

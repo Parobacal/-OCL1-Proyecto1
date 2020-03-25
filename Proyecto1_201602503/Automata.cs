@@ -400,6 +400,7 @@ namespace Proyecto1_201602503
                 char primera_letra = ' ';
                 char letra_extra = ' ';
                 string lex = "";
+                string especial = "";
                 elementos = new ArrayList();
                 // Asignamos los conjuntos:
                 int estado = 0;
@@ -536,7 +537,27 @@ namespace Proyecto1_201602503
                             }
                             else
                             {
-                                string cadena = "";
+                                if (i == lexema.Length - 2)
+                                {
+                                    string cadena = "";
+                                    cadena += primera_letra;
+                                    cadena += simbolo;
+                                    elementos.Add(cadena);
+                                    listaConjuntos.Insertar(nombre, elementos); // inserto el conjunto
+                                    cadena = "";
+                                    nombre = "";
+                                    primera_letra = ' ';
+                                    estado = 0;
+                                }
+                                else {
+                                    estado = 9;
+                                    especial += primera_letra;
+                                    especial += simbolo;
+                                    //elementos.Add(especial);
+                                    //especial = "";
+                                }
+                                
+                                /*string cadena = "";
                                 cadena += primera_letra;
                                 cadena += simbolo;
                                 elementos.Add(cadena);
@@ -544,8 +565,38 @@ namespace Proyecto1_201602503
                                 cadena = "";
                                 nombre = "";
                                 primera_letra = ' ';
-                                estado = 0;
+                                estado = 0;*/
                             }
+                            break;
+                        case 9:
+                            if (simbolo.Equals(','))
+                            {
+                                estado = 9;
+                                elementos.Add(especial);
+                                especial = "";
+                                primera_letra = ' ';
+                            }
+                            else 
+                            {
+                                especial += simbolo;
+                                if (i == lexema.Length - 2)
+                                {
+
+                                    estado = 0;
+                                    elementos.Add(especial);
+                                    listaConjuntos.Insertar(nombre, elementos); // inserto el conjunto
+                                    especial = "";
+                                    nombre = "";
+                                    primera_letra = ' ';
+                                    
+                                }
+                                else 
+                                {
+                                    estado = 9;
+                                    primera_letra = ' ';
+                                }
+                            }
+
                             break;
                     }
                 }
