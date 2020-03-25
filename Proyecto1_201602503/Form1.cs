@@ -12,6 +12,7 @@ using System.Collections;
 using Proyecto1_201602503.Estructuras;
 using Proyecto1_201602503.AFD_N;
 using Proyecto1_201602503.Lexemas;
+using System.Xml;
 
 
 namespace Proyecto1_201602503
@@ -23,13 +24,32 @@ namespace Proyecto1_201602503
         public int contador_img1 = 0;
         public int contador_img2 = 0;
         public int contador_lexema = 0;
+        public string ruta = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        public int fila;
+        public int columna;
         public string img,img1, img2;
         public int totalImagen = 0;
         private bool analisis = false;
+        private ArrayList arrayLexemas, arrayToken, arrayFila, arrayColumna, arrayError, arrayFilaError, arrayColumnaError;
         Automata automata = new Automata();
         public Form1()
         {
             InitializeComponent();
+        }
+
+        public void Inicializar()
+        { // Este metodo inicializara los arreglos y variables que serviran para cada archivo xml
+
+            this.fila = 0;
+            this.columna = 0;
+            this.arrayLexemas = new ArrayList();
+            this.arrayToken = new ArrayList();
+            this.arrayFila = new ArrayList();
+            this.arrayColumna = new ArrayList();
+            this.arrayError = new ArrayList();
+            this.arrayFilaError = new ArrayList();
+            this.arrayColumnaError = new ArrayList();
+
         }
 
         private void abrirToolStripMenuItem_Click(object sender, EventArgs e)
@@ -242,6 +262,7 @@ namespace Proyecto1_201602503
             string texto = "";
             // Por cada lexema
             for (int i = 0; i < automata.getListaLexemas().getSize(); i ++) {
+                Inicializar();               
                 // Por cada ER
                 for (int j = 0; j < listaAutomatas.Count; j ++) {
                     // Si el nombre del lexema coincide con el de la ER
@@ -254,22 +275,68 @@ namespace Proyecto1_201602503
                         if (valido1.Equals(true))
                         {
                             texto += "El lexema: " + automata.getListaLexemas().obtenerNodo(i).getNombre() + " SI es valido para la expresion regular: " + listaAutomatas[j].getNombreEr() + "\n";
+                            generarXmlTokens(i);
                             Consola.Text = texto;
                         }
                         // Si el lexema no es valido
                         else 
                         {
-                            Console.WriteLine(valido);
                             texto += "El lexema: " + automata.getListaLexemas().obtenerNodo(i).getNombre() + " NO es valido para la expresion regular: " + listaAutomatas[j].getNombreEr() + "\n";
+                            generarXmlTokensError(i);
                             Consola.Text = texto;
                         }                       
                     }
                 }
+                //
             }
         }
 
+        public void generarXmlTokens(int num) {
+            XmlDocument doc = new XmlDocument();
+            XmlElement raiz = doc.CreateElement("ListaTokens");
+            doc.AppendChild(raiz);
+            for (int i = 0; i < arrayLexemas.Count; i ++) {
+                XmlElement token = doc.CreateElement("Token");
+                raiz.AppendChild(token);
+                XmlElement nombre = doc.CreateElement("Nombre");
+                nombre.AppendChild(doc.CreateTextNode(arrayToken[i].ToString()));
+                token.AppendChild(nombre);
+                XmlElement valor = doc.CreateElement("Valor");
+                valor.AppendChild(doc.CreateTextNode(arrayLexemas[i].ToString()));
+                token.AppendChild(valor);
+                XmlElement fila = doc.CreateElement("Fila");
+                fila.AppendChild(doc.CreateTextNode(arrayFila[i].ToString()));
+                token.AppendChild(fila);
+                XmlElement columna = doc.CreateElement("Columna");
+                columna.AppendChild(doc.CreateTextNode(arrayColumna[i].ToString()));
+                token.AppendChild(columna);
+            }
+            doc.Save(ruta + "\\Lexema_" + num + ".xml");            
+        }
+        public void generarXmlTokensError(int num)
+        {
+            XmlDocument doc = new XmlDocument();
+            XmlElement raiz = doc.CreateElement("ListaErrores");
+            doc.AppendChild(raiz);
+            for (int i = 0; i < arrayError.Count; i++)
+            {
+                XmlElement token = doc.CreateElement("Error");
+                raiz.AppendChild(token);
+                XmlElement valor = doc.CreateElement("Valor");
+                valor.AppendChild(doc.CreateTextNode(arrayError[i].ToString()));
+                token.AppendChild(valor);
+                XmlElement fila = doc.CreateElement("Fila");
+                fila.AppendChild(doc.CreateTextNode(arrayFilaError[i].ToString()));
+                token.AppendChild(fila);
+                XmlElement columna = doc.CreateElement("Columna");
+                columna.AppendChild(doc.CreateTextNode(arrayColumnaError[i].ToString()));
+                token.AppendChild(columna);
+            }
+            doc.Save(ruta + "\\Lexema_" + num + "_Error.xml");
+        }
         private bool validarLexema(ArrayList Simbolos, Estado State, bool valido, AFND AFD) {
 
+            columna++;
             if (contador_lexema == Simbolos.Count - 1)
             {
                 // Por cada transicion del estado
@@ -304,18 +371,29 @@ namespace Proyecto1_201602503
                                             {
                                                 if (State.getTransiciones()[i].getEstadoFinal().getIndice().Equals(AFD.getEstadosAceptacion()[x].getIndice()))
                                                 {
+                                                    fila++;
+                                                    arrayLexemas.Add(Simbolos[contador_lexema]);
+                                                    arrayFila.Add(fila);
+                                                    arrayColumna.Add(columna);
+                                                    arrayToken.Add("Tk_Caracter_Especial");
                                                     valido = true;
                                                     contador_lexema = 0;
+                                                    columna = 0;
                                                     return valido;
                                                 }
                                             }
-
+                                            arrayError.Add(Simbolos[contador_lexema]);
+                                            arrayFilaError.Add(fila);
+                                            arrayColumnaError.Add(columna);
                                             valido = false;
                                             contador_lexema = 0;
                                             return valido;
                                         }
                                         else
                                         {
+                                            arrayError.Add(Simbolos[contador_lexema]);
+                                            arrayFilaError.Add(fila);
+                                            arrayColumnaError.Add(columna);
                                             valido = false;
                                             contador_lexema = 0;
                                             return valido;
@@ -330,18 +408,27 @@ namespace Proyecto1_201602503
                                             {
                                                 if (State.getTransiciones()[i].getEstadoFinal().getIndice().Equals(AFD.getEstadosAceptacion()[x].getIndice()))
                                                 {
+                                                    arrayLexemas.Add(Simbolos[contador_lexema]);
+                                                    arrayFila.Add(fila);
+                                                    arrayColumna.Add(columna);
+                                                    arrayToken.Add("Tk_Caracter_Especial");
                                                     valido = true;
                                                     contador_lexema = 0;
                                                     return valido;
                                                 }
                                             }
-
+                                            arrayError.Add(Simbolos[contador_lexema]);
+                                            arrayFilaError.Add(fila);
+                                            arrayColumnaError.Add(columna);
                                             valido = false;
                                             contador_lexema = 0;
                                             return valido;
                                         }
                                         else
                                         {
+                                            arrayError.Add(Simbolos[contador_lexema]);
+                                            arrayFilaError.Add(fila);
+                                            arrayColumnaError.Add(columna);
                                             valido = false;
                                             contador_lexema = 0;
                                             return valido;
@@ -356,18 +443,27 @@ namespace Proyecto1_201602503
                                             {
                                                 if (State.getTransiciones()[i].getEstadoFinal().getIndice().Equals(AFD.getEstadosAceptacion()[x].getIndice()))
                                                 {
+                                                    arrayLexemas.Add(Simbolos[contador_lexema]);
+                                                    arrayFila.Add(fila);
+                                                    arrayColumna.Add(columna);
+                                                    arrayToken.Add("Tk_Caracter_Especial");
                                                     valido = true;
                                                     contador_lexema = 0;
                                                     return valido;
                                                 }
                                             }
-
+                                            arrayError.Add(Simbolos[contador_lexema]);
+                                            arrayFilaError.Add(fila);
+                                            arrayColumnaError.Add(columna);
                                             valido = false;
                                             contador_lexema = 0;
                                             return valido;
                                         }
                                         else
                                         {
+                                            arrayError.Add(Simbolos[contador_lexema]);
+                                            arrayFilaError.Add(fila);
+                                            arrayColumnaError.Add(columna);
                                             valido = false;
                                             contador_lexema = 0;
                                             return valido;
@@ -382,18 +478,27 @@ namespace Proyecto1_201602503
                                             {
                                                 if (State.getTransiciones()[i].getEstadoFinal().getIndice().Equals(AFD.getEstadosAceptacion()[x].getIndice()))
                                                 {
+                                                    arrayLexemas.Add(Simbolos[contador_lexema]);
+                                                    arrayFila.Add(fila);
+                                                    arrayColumna.Add(columna);
+                                                    arrayToken.Add("Tk_Caracter_Especial");
                                                     valido = true;
                                                     contador_lexema = 0;
                                                     return valido;
                                                 }
                                             }
-
+                                            arrayError.Add(Simbolos[contador_lexema]);
+                                            arrayFilaError.Add(fila);
+                                            arrayColumnaError.Add(columna);
                                             valido = false;
                                             contador_lexema = 0;
                                             return valido;
                                         }
                                         else
                                         {
+                                            arrayError.Add(Simbolos[contador_lexema]);
+                                            arrayFilaError.Add(fila);
+                                            arrayColumnaError.Add(columna);
                                             valido = false;
                                             contador_lexema = 0;
                                             return valido;
@@ -406,12 +511,18 @@ namespace Proyecto1_201602503
                                         {
                                             if (State.getTransiciones()[i].getEstadoFinal().getIndice().Equals(AFD.getEstadosAceptacion()[x].getIndice()))
                                             {
+                                                arrayLexemas.Add(Simbolos[contador_lexema]);
+                                                arrayFila.Add(fila);
+                                                arrayColumna.Add(columna);
+                                                arrayToken.Add("Tk_Conjunto_" + automata.getListaConjuntos().obtenerNodo(j).getNombre());
                                                 valido = true;
                                                 contador_lexema = 0;
                                                 return valido;
                                             }
                                         }
-
+                                        arrayError.Add(Simbolos[contador_lexema]);
+                                        arrayFilaError.Add(fila);
+                                        arrayColumnaError.Add(columna);
                                         valido = false;
                                         contador_lexema = 0;
                                         return valido;
@@ -431,18 +542,27 @@ namespace Proyecto1_201602503
                             {
                                 if (State.getTransiciones()[i].getEstadoFinal().getIndice().Equals(AFD.getEstadosAceptacion()[x].getIndice()))
                                 {
+                                    arrayLexemas.Add(Simbolos[contador_lexema]);
+                                    arrayFila.Add(fila);
+                                    arrayColumna.Add(columna);
+                                    arrayToken.Add("Tk_Simbolo");
                                     valido = true;
                                     contador_lexema = 0;
                                     return valido;
                                 }
                             }
-                            
+                            arrayError.Add(Simbolos[contador_lexema]);
+                            arrayFilaError.Add(fila);
+                            arrayColumnaError.Add(columna);
                             valido = false;
                             contador_lexema = 0;
                             return valido;
                         }
                     }
                 }
+                arrayError.Add(Simbolos[contador_lexema]);
+                arrayFilaError.Add(fila);
+                arrayColumnaError.Add(columna);
                 valido = false;
                 //return valido;
             }
@@ -479,13 +599,22 @@ namespace Proyecto1_201602503
                                         {
                                             if (codigoASCII.Equals(10))
                                             {
+                                                fila++;
+                                                arrayLexemas.Add(Simbolos[contador_lexema]);
+                                                arrayFila.Add(fila);
+                                                arrayColumna.Add(columna);
+                                                arrayToken.Add("Tk_Caracter_Especial");
                                                 valido = true;
                                                 contador_lexema++;
+                                                columna = 0;
                                                 Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
                                                 return validarLexema(Simbolos, siguienteEstado, valido, AFD);
                                             }
                                             else
                                             {
+                                                arrayError.Add(Simbolos[contador_lexema]);
+                                                arrayFilaError.Add(fila);
+                                                arrayColumnaError.Add(columna);
                                                 valido = false;
                                                 contador_lexema = 0;
                                                 return valido;
@@ -496,14 +625,20 @@ namespace Proyecto1_201602503
                                         {
                                             if (codigoASCII.Equals(39))
                                             {
+                                                arrayLexemas.Add(Simbolos[contador_lexema]);
+                                                arrayFila.Add(fila);
+                                                arrayColumna.Add(columna);
+                                                arrayToken.Add("Tk_Caracter_Especial");
                                                 valido = true;
-
                                                 contador_lexema++;
                                                 Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
                                                 return validarLexema(Simbolos, siguienteEstado, valido, AFD);
                                             }
                                             else
                                             {
+                                                arrayError.Add(Simbolos[contador_lexema]);
+                                                arrayFilaError.Add(fila);
+                                                arrayColumnaError.Add(columna);
                                                 valido = false;
                                                 contador_lexema = 0;
                                                 return valido;
@@ -514,6 +649,10 @@ namespace Proyecto1_201602503
                                         {
                                             if (codigoASCII.Equals(34))
                                             {
+                                                arrayLexemas.Add(Simbolos[contador_lexema]);
+                                                arrayFila.Add(fila);
+                                                arrayColumna.Add(columna);
+                                                arrayToken.Add("Tk_Caracter_Especial");
                                                 valido = true;
                                                 contador_lexema++;
                                                 Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
@@ -521,6 +660,9 @@ namespace Proyecto1_201602503
                                             }
                                             else
                                             {
+                                                arrayError.Add(Simbolos[contador_lexema]);
+                                                arrayFilaError.Add(fila);
+                                                arrayColumnaError.Add(columna);
                                                 valido = false;
                                                 contador_lexema = 0;
                                                 return valido;
@@ -531,6 +673,10 @@ namespace Proyecto1_201602503
                                         {
                                             if (codigoASCII.Equals(09))
                                             {
+                                                arrayLexemas.Add(Simbolos[contador_lexema]);
+                                                arrayFila.Add(fila);
+                                                arrayColumna.Add(columna);
+                                                arrayToken.Add("Tk_Caracter_Especial");
                                                 valido = true;
                                                 contador_lexema++;
                                                 Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
@@ -538,6 +684,9 @@ namespace Proyecto1_201602503
                                             }
                                             else
                                             {
+                                                arrayError.Add(Simbolos[contador_lexema]);
+                                                arrayFilaError.Add(fila);
+                                                arrayColumnaError.Add(columna);
                                                 valido = false;
                                                 contador_lexema = 0;
                                                 return valido;
@@ -546,6 +695,10 @@ namespace Proyecto1_201602503
                                         // Si hay alguna coincidencia
                                         else if (Simbolos[contador_lexema].ToString().Equals(automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].ToString()))
                                         {
+                                            arrayLexemas.Add(Simbolos[contador_lexema]);
+                                            arrayFila.Add(fila);
+                                            arrayColumna.Add(columna);
+                                            arrayToken.Add("Tk_Conjunto_" + automata.getListaConjuntos().obtenerNodo(j).getNombre());
                                             valido = true;
                                             contador_lexema++;
                                             Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
@@ -558,10 +711,12 @@ namespace Proyecto1_201602503
                         // Si NO ES UN CONJUNTO
                         else
                         {
-                            // Si el simbolo coincide
-                            //Console.WriteLine(Simbolos[contador_lexema] + " " + State.getTransiciones()[i].getSimbolo());
                             if (Simbolos[contador_lexema].ToString().Equals(State.getTransiciones()[i].getSimbolo()))
                             {
+                                arrayLexemas.Add(Simbolos[contador_lexema]);
+                                arrayFila.Add(fila);
+                                arrayColumna.Add(columna);
+                                arrayToken.Add("Tk_Simbolo");
                                 valido = true;
                                 contador_lexema++;
                                 Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
@@ -569,11 +724,16 @@ namespace Proyecto1_201602503
                             }
                         }
                     }
+                    arrayError.Add(Simbolos[contador_lexema]);
+                    arrayFilaError.Add(fila);
+                    arrayColumnaError.Add(columna);
                     valido = false;
-                    //return valido;
                 }
                 else 
                 {
+                    arrayError.Add(Simbolos[contador_lexema]);
+                    arrayFilaError.Add(fila);
+                    arrayColumnaError.Add(columna);
                     valido = false;
                 }
             }                      

@@ -34,7 +34,7 @@ namespace Proyecto1_201602503
         public void Inicializar() { // Este metodo inicializara los arreglos y variables que serviran por cada llamada del metodo analis lexico y sintactico
 
             this.lexema = "";
-            this.fila = 1;
+            this.fila = 0;
             this.columna = 0;
             this.arrayLexemas = new ArrayList();
             this.arrayToken = new ArrayList();
