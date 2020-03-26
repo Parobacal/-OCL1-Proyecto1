@@ -419,15 +419,7 @@ namespace Proyecto1_201602503
                                             contador_lexema = 0;
                                             return valido;
                                         }
-                                        else
-                                        {
-                                            arrayError.Add(Simbolos[contador_lexema]);
-                                            arrayFilaError.Add(fila);
-                                            arrayColumnaError.Add(columna);
-                                            valido = false;
-                                            contador_lexema = 0;
-                                            return valido;
-                                        }
+                                        
                                     }
                                     // Si es una comilla simple
                                     else if (automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].Equals("\\" + "'"))
@@ -454,15 +446,7 @@ namespace Proyecto1_201602503
                                             contador_lexema = 0;
                                             return valido;
                                         }
-                                        else
-                                        {
-                                            arrayError.Add(Simbolos[contador_lexema]);
-                                            arrayFilaError.Add(fila);
-                                            arrayColumnaError.Add(columna);
-                                            valido = false;
-                                            contador_lexema = 0;
-                                            return valido;
-                                        }
+                                        
                                     }
                                     // Si es una comilla doble
                                     else if (automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].Equals("\\" + "\""))
@@ -489,15 +473,7 @@ namespace Proyecto1_201602503
                                             contador_lexema = 0;
                                             return valido;
                                         }
-                                        else
-                                        {
-                                            arrayError.Add(Simbolos[contador_lexema]);
-                                            arrayFilaError.Add(fila);
-                                            arrayColumnaError.Add(columna);
-                                            valido = false;
-                                            contador_lexema = 0;
-                                            return valido;
-                                        }
+                                        
                                     }
                                     // Si es una tabulacion
                                     else if (automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].Equals("\\" + "t"))
@@ -524,15 +500,7 @@ namespace Proyecto1_201602503
                                             contador_lexema = 0;
                                             return valido;
                                         }
-                                        else
-                                        {
-                                            arrayError.Add(Simbolos[contador_lexema]);
-                                            arrayFilaError.Add(fila);
-                                            arrayColumnaError.Add(columna);
-                                            valido = false;
-                                            contador_lexema = 0;
-                                            return valido;
-                                        }
+                                        
                                     }
                                     // Si hay alguna coincidencia
                                     else if (Simbolos[contador_lexema].ToString().Equals(automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].ToString()))
@@ -640,15 +608,7 @@ namespace Proyecto1_201602503
                                                 Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
                                                 return validarLexema(Simbolos, siguienteEstado, valido, AFD);
                                             }
-                                            else
-                                            {
-                                                arrayError.Add(Simbolos[contador_lexema]);
-                                                arrayFilaError.Add(fila);
-                                                arrayColumnaError.Add(columna);
-                                                valido = false;
-                                                contador_lexema = 0;
-                                                return valido;
-                                            }
+                                            
                                         }
                                         // Si es una comilla simple
                                         else if (automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].Equals("\\" + "'"))
@@ -664,15 +624,7 @@ namespace Proyecto1_201602503
                                                 Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
                                                 return validarLexema(Simbolos, siguienteEstado, valido, AFD);
                                             }
-                                            else
-                                            {
-                                                arrayError.Add(Simbolos[contador_lexema]);
-                                                arrayFilaError.Add(fila);
-                                                arrayColumnaError.Add(columna);
-                                                valido = false;
-                                                contador_lexema = 0;
-                                                return valido;
-                                            }
+                                            
                                         }
                                         // Si es una comilla doble
                                         else if (automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].Equals("\\" + "\""))
@@ -688,15 +640,7 @@ namespace Proyecto1_201602503
                                                 Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
                                                 return validarLexema(Simbolos, siguienteEstado, valido, AFD);
                                             }
-                                            else
-                                            {
-                                                arrayError.Add(Simbolos[contador_lexema]);
-                                                arrayFilaError.Add(fila);
-                                                arrayColumnaError.Add(columna);
-                                                valido = false;
-                                                contador_lexema = 0;
-                                                return valido;
-                                            }
+                                            
                                         }
                                         // Si es una tabulacion
                                         else if (automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].Equals("\\" + "t"))
@@ -712,15 +656,7 @@ namespace Proyecto1_201602503
                                                 Estado siguienteEstado = AFD.getEstados()[State.getTransiciones()[i].getEstadoFinal().getIndice()];
                                                 return validarLexema(Simbolos, siguienteEstado, valido, AFD);
                                             }
-                                            else
-                                            {
-                                                arrayError.Add(Simbolos[contador_lexema]);
-                                                arrayFilaError.Add(fila);
-                                                arrayColumnaError.Add(columna);
-                                                valido = false;
-                                                contador_lexema = 0;
-                                                return valido;
-                                            }
+                                            
                                         }
                                         // Si hay alguna coincidencia
                                         else if (Simbolos[contador_lexema].ToString().Equals(automata.getListaConjuntos().obtenerNodo(j).getElementos()[k].ToString()))

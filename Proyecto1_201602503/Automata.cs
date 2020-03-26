@@ -473,6 +473,8 @@ namespace Proyecto1_201602503
                             {
                                 listaConjuntos.Insertar(nombre, elementos); // Inserto el conjunto
                                 nombre = "";
+                                primera_letra = ' ';
+                                lexema = "";
                             }
                             else
                             {
@@ -499,6 +501,11 @@ namespace Proyecto1_201602503
                             if (simbolo.Equals('~'))
                             {
                                 estado = 4;
+                            }
+                            else if (simbolo.Equals(',')) 
+                            {
+                                estado = 3;
+                                elementos.Add(primera_letra);
                             }
                             else
                             {
