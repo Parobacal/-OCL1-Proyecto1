@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
 using System.IO;
+
 using Proyecto1_201602503.Estructuras;
 
 namespace Proyecto1_201602503
@@ -448,6 +449,7 @@ namespace Proyecto1_201602503
                             else if (simbolo.Equals('['))
                             {
                                 estado = 5;
+                                primera_letra = simbolo;
                             }
                             else if (codigoASCII.Equals(92)) // \
                             {
@@ -494,7 +496,14 @@ namespace Proyecto1_201602503
                             estado = 0;
                             break;
                         case 5:
-                            estado = 6;
+                            if (simbolo.Equals('~'))
+                            {
+                                estado = 4;
+                            }
+                            else
+                            {
+                                estado = 6;
+                            }
                             break;
                         case 6:
                             if (simbolo.Equals(':'))
@@ -505,7 +514,9 @@ namespace Proyecto1_201602503
                             else
                             {
                                 estado = 6;
+                                elementos.Add(simbolo);
                                 lex += simbolo;
+                                
                             }
                             break;
                         case 7:
@@ -513,7 +524,6 @@ namespace Proyecto1_201602503
                             {
                                 
                                 estado = 0;
-                                elementos.Add(lex);
                                 listaConjuntos.Insertar(nombre, elementos); // inserto el conjunto
                                 letra_extra = ' ';
                                 lex = "";
@@ -528,6 +538,7 @@ namespace Proyecto1_201602503
                             {
                                 estado = 6;
                                 lex += simbolo;
+                                elementos.Add(simbolo);
                             }
                             break;
                         case 8:
@@ -596,7 +607,6 @@ namespace Proyecto1_201602503
                                     primera_letra = ' ';
                                 }
                             }
-
                             break;
                     }
                 }
@@ -766,9 +776,9 @@ namespace Proyecto1_201602503
 
 
         // Metodos para los reportes
-        public void reporteHtml() {
+        public void reporteHtml(int num) {
 
-            StreamWriter sw = new StreamWriter(@"C:\Users\Pablo Barillas\Desktop\Rep_Token.html");
+            StreamWriter sw = new StreamWriter(@"C:\Users\Pablo Barillas\Desktop\Rep_Token" + num + ".html");
             string cadena = "";
             cadena += "<TABLE BORDER='5'    WIDTH='50 % '   CELLPADDING='4'CELLSPACING='3'>\n";
             cadena += "<TR>\n";
@@ -783,40 +793,58 @@ namespace Proyecto1_201602503
             cadena += "</TR>\n";
             for (int i = 0; i < arrayLexemas.Count; i++)
             {
-                
+                Console.WriteLine(i);
                 cadena += " <TR ALIGN='CENTER'>\n";
                 cadena += " <TD>" + arrayToken[i] + "</TD>";
-                if ((arrayLexemas[i].Equals(">")) || (arrayLexemas[i].Equals("<")))
-                {
-                    cadena += "<TD> mayor que o menor que </TD>";
-                }
-                else {
-                    cadena += " <TD>" + arrayLexemas[i] + "</TD>";
-                }
-                             
-                //Console.WriteLine("Numero: " + i + arrayLexemas[i]);
+                cadena += " <TD>" + arrayLexemas[i] + "</TD>";                            
                 cadena += " <TD>" + arrayColumna[i] + "</TD>";
                 cadena += " <TD>" + arrayFila[i] + "</TD>";
                 cadena += " </TR>";
+                
             }
             cadena += "</TABLE>";
+            Console.Write(cadena);
             sw.WriteLine(cadena);
+            sw.Flush();
             cadena = "";
+
         }
 
+        public void reporteHtmlErrores(int num)
+        {
 
+            StreamWriter sw = new StreamWriter(@"C:\Users\Pablo Barillas\Desktop\Rep_Errores" + num + ".html");
+            string cadena = "";
+            cadena += "<TABLE BORDER='5'    WIDTH='50 % '   CELLPADDING='4'CELLSPACING='3'>\n";
+            cadena += "<TR>\n";
+            cadena += "<TH COLSPAN='4'><BR><H3>Reporte de Errores General</H3>\n";
+            cadena += "</TH>\n";
+            cadena += "</TR>\n";
+            cadena += "<TR>\n";
+            cadena += "<TH>Error</TH>\n";
+            cadena += "<TH>Columna</TH>\n";
+            cadena += "<TH>Fila</TH>\n";
+            cadena += "</TR>\n";
 
+            for (int i = 0; i < arrayError.Count; i++)
+            {
 
+                Console.WriteLine(i);
+                cadena += " <TR ALIGN='CENTER'>\n";
+                cadena += " <TD>" + arrayError[i] + "</TD>";
+                cadena += " <TD>" + arrayColumnaError[i] + "</TD>";
+                cadena += " <TD>" + arrayFilaError[i] + "</TD>";
+                cadena += " </TR>";
 
+            }
 
+            cadena += "</TABLE>";
+            Console.Write(cadena);
+            sw.WriteLine(cadena);
+            sw.Flush();
+            cadena = "";
 
-
-
-
-
-
-
-
+        }
 
 
     }

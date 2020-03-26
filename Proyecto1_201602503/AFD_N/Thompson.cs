@@ -343,34 +343,50 @@ namespace Proyecto1_201602503.AFD_N
 
         }
 
+        public bool estadoExiste(Estado state, Conjunto conjunto_)
+        {
+            bool existe = false;
+            for (int i = 0; i < conjunto_.getEstados().Count; i++)
+            {
+                if (conjunto_.getEstados()[i].getIndice().Equals(state.getIndice()))
+                {
+                    existe = true;
+                    break;
+                }
+                //}
+            }
+            return existe;
+        }
 
 
         public void obtenerConjunto(Estado State, Conjunto nuevoConjunto, string simbolo) 
         {
-            if (State.getTransiciones().Any())
-            {
-                if (simbolo.Equals("ε"))
+                if (State.getTransiciones().Any())
                 {
-                    if ((!nuevoConjunto.getEstados().Any())) // esta mal porque solo toma en cuenta si viene una vez y esta vacio en cambio pueden ser dos veces y no estar vacio
+                    if (simbolo.Equals("ε"))
                     {
+                        if ((!nuevoConjunto.getEstados().Any())) // esta mal porque solo toma en cuenta si viene una vez y esta vacio en cambio pueden ser dos veces y no estar vacio
+                        {
 
-                        nuevoConjunto.setEstado(State.getTransiciones()[0].getEstadoInicial());
+                            nuevoConjunto.setEstado(State.getTransiciones()[0].getEstadoInicial());
+
+                        }
+                    }
+                    for (int i = 0; i < State.getTransiciones().Count; i++)
+                    {
+                        if (State.getTransiciones()[i].getSimbolo().Equals(simbolo))
+                        {
+                            Estado nuevoState = State.getTransiciones()[i].getEstadoFinal();
+                            if (!estadoExiste(nuevoState, nuevoConjunto).Equals(true))
+                            {                              
+                                nuevoConjunto.setEstado(State.getTransiciones()[i].getEstadoFinal());
+                                obtenerConjunto(nuevoState, nuevoConjunto, simbolo);
+                            }
+
+                        }
 
                     }
-                }
-                for (int i = 0; i < State.getTransiciones().Count; i++)
-                {
-                    if (State.getTransiciones()[i].getSimbolo().Equals(simbolo))
-                    {
-
-                        Estado nuevoState = State.getTransiciones()[i].getEstadoFinal();
-                        nuevoConjunto.setEstado(State.getTransiciones()[i].getEstadoFinal());
-                        obtenerConjunto(nuevoState, nuevoConjunto, simbolo);
-
-                    }
-
-                }
-            }                     
+                }          
         }
 
         public void generarAFD(string nombre) {

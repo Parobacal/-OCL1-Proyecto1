@@ -24,6 +24,8 @@ namespace Proyecto1_201602503
         public int contador_img1 = 0;
         public int contador_img2 = 0;
         public int contador_lexema = 0;
+        public int contador_html = 0;
+        public int contador_html_errores = 0;
         public string ruta = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         public int fila;
         public int columna;
@@ -152,7 +154,15 @@ namespace Proyecto1_201602503
         private void generarPDFToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Metodo que genera el reporte HTML para los archivos de entrada
-            automata.reporteHtml();
+            contador_html++;
+            if (analisis.Equals(true))
+            {
+                automata.reporteHtml(contador_html);
+            }
+            else
+            {
+                MessageBox.Show("No se ha analizado el archivo");
+            }            
         }
 
         public string Output(Lista_Simple Conjuntos, Lista_Simple Expresiones, Lista_Simple Lexemas) {
@@ -209,7 +219,6 @@ namespace Proyecto1_201602503
             if (analisis.Equals(true))
             {
                 generarThomphson();
-                analisis = false;
             }
             else
             {
@@ -232,6 +241,20 @@ namespace Proyecto1_201602503
             }
             pictureBox2.Image = Image.FromFile(@"C:\Users\Pablo Barillas\Desktop\Tablas_estados\" + img1);
             pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+        }
+
+        private void generarErroresHTMLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            contador_html_errores++;
+            // Metodo que genera el reporte HTML de errores para los archivos de entrada
+            if (analisis.Equals(true))
+            {
+                automata.reporteHtmlErrores(contador_html_errores);
+            }
+            else
+            {
+                MessageBox.Show("No se ha analizado el archivo");
+            }
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -335,7 +358,14 @@ namespace Proyecto1_201602503
             doc.Save(ruta + "\\Lexema_" + num + "_Error.xml");
         }
         private bool validarLexema(ArrayList Simbolos, Estado State, bool valido, AFND AFD) {
-
+            // Si hay una transicion vacia
+            for (int i = 0; i < AFD.getEstadosAceptacion().Count; i ++) {
+                if ((Simbolos.Count == 0) && (AFD.getEstadoInicial().getIndice().Equals(AFD.getEstadosAceptacion()[i].getIndice()))) 
+                {
+                    valido = true;
+                    return valido;
+                }
+            }
             columna++;
             if (contador_lexema == Simbolos.Count - 1)
             {
