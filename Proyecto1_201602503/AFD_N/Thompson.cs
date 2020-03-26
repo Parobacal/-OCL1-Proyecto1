@@ -662,7 +662,19 @@ namespace Proyecto1_201602503.AFD_N
             string texto = "";
             texto += "<tr><td>Estados</td>";
             for (int i = 0; i < Terminales.Count; i ++) {
-                texto += "<td>" + Terminales[i].ToString() +  "</td>";
+
+                if (Terminales[i].Equals("<"))
+                {
+                    texto += "<td>Menor que</td>";
+                }
+                else if (Terminales[i].Equals(">")) 
+                {
+                    texto += "<td>Mayor que</td>";
+                }
+                else
+                {
+                    texto += "<td>" + Terminales[i].ToString() + "</td>";
+                }
             }
             texto += "</tr> \n";
             grafo1.Append(texto);
